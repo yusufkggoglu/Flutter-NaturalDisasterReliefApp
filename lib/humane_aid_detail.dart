@@ -1,16 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/constants/color.dart';
+import 'package:flutter_application_1/models/humane_aid_create_response_model.dart';
+import 'package:flutter_application_1/services/humane_aid_service.dart';
 import 'package:flutter_application_1/user_interface.dart';
 import 'package:hexcolor/hexcolor.dart';
 
 class HumaneAidDetail extends StatefulWidget {
-  const HumaneAidDetail({super.key});
-
+  final String id;
+  const HumaneAidDetail({super.key, required this.id});
   @override
   State<HumaneAidDetail> createState() => _HumaneAidDetailState();
 }
 
 class _HumaneAidDetailState extends State<HumaneAidDetail> {
+  @override
+  // void initState() {
+  //   super.initState();
+  // }
+
   @override
   Widget build(BuildContext context) {
     double deviceWidth = MediaQuery.of(context).size.width;
@@ -78,86 +85,131 @@ class _HumaneAidDetailState extends State<HumaneAidDetail> {
                       ),
                     ),
                     width: deviceWidth,
-                    child: const Column(
-                      children: [
-                        ListTile(
-                          title: Text(
-                            'Ad Soyad',
-                            style: TextStyle(fontSize: 20),
-                          ),
-                          subtitle: Text(
-                            'Yusuf Küçükgökgözoğlu',
-                            style: TextStyle(fontSize: 17),
-                          ),
-                        ),
-                        Divider(),
-                        ListTile(
-                          title: Text(
-                            'Telefon',
-                            style: TextStyle(fontSize: 20),
-                          ),
-                          subtitle: Text(
-                            '05386938784',
-                            style: TextStyle(fontSize: 17),
-                          ),
-                        ),
-                        Divider(),
-                        ListTile(
-                          title: Text(
-                            'Adres',
-                            style: TextStyle(fontSize: 20),
-                          ),
-                          subtitle: Text(
-                            'Abdi ipekçi mah. 1547 sok. Kocaeli/Darıca',
-                            style: TextStyle(fontSize: 17),
-                          ),
-                        ),
-                        Divider(),
-                        ListTile(
-                          title: Text(
-                            'Ad Soyad',
-                            style: TextStyle(fontSize: 20),
-                          ),
-                          subtitle: Text(
-                            'Yusuf Küçükgökgözoğlu',
-                            style: TextStyle(fontSize: 17),
-                          ),
-                        ),
-                        Divider(),
-                        ListTile(
-                          title: Text(
-                            'Yardım Tipi',
-                            style: TextStyle(fontSize: 20),
-                          ),
-                          subtitle: Text(
-                            'İnsani Yardım',
-                            style: TextStyle(fontSize: 17),
-                          ),
-                        ),
-                        Divider(),
-                        ListTile(
-                          title: Text(
-                            'İstenen Yardım Açıklaması',
-                            style: TextStyle(fontSize: 20),
-                          ),
-                          subtitle: Text(
-                            'Battaniye ve yorgan ihtiyacımız var.',
-                            style: TextStyle(fontSize: 17),
-                          ),
-                        ),
-                        Divider(),
-                        ListTile(
-                          title: Text(
-                            'Oluşturulma Tarihi',
-                            style: TextStyle(fontSize: 20),
-                          ),
-                          subtitle: Text(
-                            '28.02.2024 - 11.00',
-                            style: TextStyle(fontSize: 17),
-                          ),
-                        ),
-                      ],
-                    ),
+                    child: FutureBuilder<Data?>(
+                        future: HumaneAidService.getByIdHumanData(widget.id),
+                        builder: (context, snapshot) {
+                          var humanData = snapshot.data;
+                          if (snapshot.hasData) {
+                            return Column(
+                              children: [
+                                ListTile(
+                                  title: const Text(
+                                    'Ad Soyad',
+                                    style: TextStyle(fontSize: 20),
+                                  ),
+                                  subtitle: Text(
+                                    humanData!.name.toString(),
+                                    style: const TextStyle(fontSize: 17),
+                                  ),
+                                ),
+                                const Divider(),
+                                ListTile(
+                                  title: const Text(
+                                    'Telefon',
+                                    style: TextStyle(fontSize: 20),
+                                  ),
+                                  subtitle: Text(
+                                    humanData.phone.toString(),
+                                    style: const TextStyle(fontSize: 17),
+                                  ),
+                                ),
+                                const Divider(),
+                                ListTile(
+                                  title: const Text(
+                                    'İl',
+                                    style: TextStyle(fontSize: 20),
+                                  ),
+                                  subtitle: Text(
+                                    humanData.province.toString(),
+                                    style: const TextStyle(fontSize: 17),
+                                  ),
+                                ),
+                                const Divider(),
+                                ListTile(
+                                  title: const Text(
+                                    'İlçe',
+                                    style: TextStyle(fontSize: 20),
+                                  ),
+                                  subtitle: Text(
+                                    humanData.district.toString(),
+                                    style: const TextStyle(fontSize: 17),
+                                  ),
+                                ),
+                                const Divider(),
+                                ListTile(
+                                  title: const Text(
+                                    'Mahalle',
+                                    style: TextStyle(fontSize: 20),
+                                  ),
+                                  subtitle: Text(
+                                    humanData.neighborhood.toString(),
+                                    style: const TextStyle(fontSize: 17),
+                                  ),
+                                ),
+                                const Divider(),
+                                ListTile(
+                                  title: const Text(
+                                    'Adres',
+                                    style: TextStyle(fontSize: 20),
+                                  ),
+                                  subtitle: Text(
+                                    humanData.address.toString(),
+                                    style: const TextStyle(fontSize: 17),
+                                  ),
+                                ),
+                                const Divider(),
+                                ListTile(
+                                  title: const Text(
+                                    'Konum Url',
+                                    style: TextStyle(fontSize: 20),
+                                  ),
+                                  subtitle: Text(
+                                    humanData.locationUrl.toString(),
+                                    style: const TextStyle(fontSize: 17),
+                                  ),
+                                ),
+                                const Divider(),
+                                ListTile(
+                                  title: const Text(
+                                    'İstenilen Yardım',
+                                    style: TextStyle(fontSize: 20),
+                                  ),
+                                  subtitle: Text(
+                                    humanData.subTitle.toString(),
+                                    style: const TextStyle(fontSize: 17),
+                                  ),
+                                ),
+                                const Divider(),
+                                ListTile(
+                                  title: const Text(
+                                    'İstenilen Yardım Açıklaması',
+                                    style: TextStyle(fontSize: 20),
+                                  ),
+                                  subtitle: Text(
+                                    humanData.description.toString(),
+                                    style: const TextStyle(fontSize: 17),
+                                  ),
+                                ),
+                                const Divider(),
+                                ListTile(
+                                  title: const Text(
+                                    'Yardım Talebi Oluşturulma Tarihi',
+                                    style: TextStyle(fontSize: 20),
+                                  ),
+                                  subtitle: Text(
+                                    humanData.createdTime.toString(),
+                                    style: const TextStyle(fontSize: 17),
+                                  ),
+                                ),
+                                const Divider(),
+                              ],
+                            );
+                          } else {
+                            return const Center(
+                              child: CircularProgressIndicator(),
+                            );
+                          }
+                        }),
                   ),
                 )
               ],

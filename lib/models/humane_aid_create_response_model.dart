@@ -1,30 +1,25 @@
-class HumaneAidModel {
-  List<HumanData>? humanData;
+class HumaneAidSingleModel {
+  Data? data;
   String? errors;
 
-  HumaneAidModel({this.humanData, this.errors});
+  HumaneAidSingleModel({this.data, this.errors});
 
-  HumaneAidModel.fromJson(Map<String, dynamic> json) {
-    if (json['data'] != null) {
-      humanData = <HumanData>[];
-      json['data'].forEach((v) {
-        humanData!.add(HumanData.fromJson(v));
-      });
-    }
+  HumaneAidSingleModel.fromJson(Map<String, dynamic> json) {
+    data = json['data'] != null ? Data.fromJson(json['data']) : null;
     errors = json['errors'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
-    if (humanData != null) {
-      data['data'] = humanData!.map((v) => v.toJson()).toList();
+    if (this.data != null) {
+      data['data'] = this.data!.toJson();
     }
     data['errors'] = errors;
     return data;
   }
 }
 
-class HumanData {
+class Data {
   String? id;
   String? userId;
   String? name;
@@ -39,7 +34,7 @@ class HumanData {
   bool? status;
   String? createdTime;
 
-  HumanData(
+  Data(
       {this.id,
       this.userId,
       this.name,
@@ -54,7 +49,7 @@ class HumanData {
       this.status,
       this.createdTime});
 
-  HumanData.fromJson(Map<String, dynamic> json) {
+  Data.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     userId = json['userId'];
     name = json['name'];

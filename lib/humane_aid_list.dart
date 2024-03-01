@@ -84,7 +84,7 @@ class _HumaneAidState extends State<HumaneAid> {
               ],
             ),
             Expanded(
-              child: FutureBuilder<List<HumaneData>?>(
+              child: FutureBuilder<List<HumanData>?>(
                   future: HumaneAidService.getHumanData(),
                   builder: (context, snapshot) {
                     var humanData = snapshot.data;
@@ -96,8 +96,9 @@ class _HumaneAidState extends State<HumaneAid> {
                           return InkWell(
                             onTap: () => {
                               Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (context) =>
-                                      const HumaneAidDetail()))
+                                  builder: (context) => HumaneAidDetail(
+                                        id: human!.id.toString(),
+                                      )))
                             },
                             child: Card(
                               child: SizedBox(
@@ -109,11 +110,10 @@ class _HumaneAidState extends State<HumaneAid> {
                                     size: 40,
                                   ),
                                   title: Text(
-                                    human?.location ?? 'Null',
+                                    human?.province.toString() ?? 'Null',
                                     style: const TextStyle(fontSize: 20),
                                   ),
-                                  subtitle: const Text(
-                                      'Enkazdan ses geldi , insan var . Yardım edin.'),
+                                  subtitle: Text(human?.subTitle ?? 'Null'),
                                 ),
                               ),
                             ),
