@@ -1,18 +1,22 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/constants/color.dart';
+import 'package:flutter_application_1/home.dart';
+import 'package:flutter_application_1/humane_aid_update.dart';
 import 'package:flutter_application_1/models/humane_aid_create_response_model.dart';
 import 'package:flutter_application_1/services/humane_aid_service.dart';
 import 'package:flutter_application_1/user_interface.dart';
 import 'package:hexcolor/hexcolor.dart';
 
-class HumaneAidDetail extends StatefulWidget {
+class HumaneAidDetailByUser extends StatefulWidget {
   final String id;
-  const HumaneAidDetail({super.key, required this.id});
+  const HumaneAidDetailByUser({super.key, required this.id});
   @override
-  State<HumaneAidDetail> createState() => _HumaneAidDetailState();
+  State<HumaneAidDetailByUser> createState() => _HumaneAidDetailByUser();
 }
 
-class _HumaneAidDetailState extends State<HumaneAidDetail> {
+class _HumaneAidDetailByUser extends State<HumaneAidDetailByUser> {
   @override
   void initState() {
     super.initState();
@@ -51,7 +55,7 @@ class _HumaneAidDetailState extends State<HumaneAidDetail> {
                                 fontWeight: FontWeight.w100, fontSize: 14),
                           ),
                           Text(
-                            "İnsani Yardım Talebi",
+                            "İnsani Yardım Talebim",
                             style: TextStyle(
                                 fontSize: 24,
                                 fontWeight: FontWeight.bold,
@@ -71,6 +75,49 @@ class _HumaneAidDetailState extends State<HumaneAidDetail> {
                           ))
                     ],
                   ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(5),
+                  child: ElevatedButton(
+                      style:
+                          ElevatedButton.styleFrom(backgroundColor: Colors.red),
+                      onPressed: () async {
+                        showAlertDialog(context);
+                      },
+                      child: SizedBox(
+                        width: deviceWidth,
+                        height: 50.0,
+                        child: const Center(
+                          child: Text(
+                            "SİL",
+                            style: TextStyle(fontSize: 20, color: Colors.white),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      )),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(5),
+                  child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.blue),
+                      onPressed: () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => HumaneAidUpdate(
+                                  id: widget.id,
+                                )));
+                      },
+                      child: SizedBox(
+                        width: deviceWidth,
+                        height: 50.0,
+                        child: const Center(
+                          child: Text(
+                            "GÜNCELLE",
+                            style: TextStyle(fontSize: 20, color: Colors.white),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      )),
                 ),
                 Padding(
                   padding: const EdgeInsets.all(10),
@@ -217,6 +264,56 @@ class _HumaneAidDetailState extends State<HumaneAidDetail> {
           ),
         ),
       ),
+    );
+  }
+
+  showAlertDialog(BuildContext context) {
+    Widget cancelButton = TextButton(
+      child: const Text("Hayır"),
+      onPressed: () {
+        Navigator.of(context).pop();
+      },
+    );
+    Widget continueButton = TextButton(
+      child: const Text("Evet"),
+      onPressed: () async {
+        var data = await HumaneAidService.deleteHumanData(widget.id);
+        if (data != null) {
+          Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const HomeScreen(),
+              ),
+              (route) => false);
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+                duration: Duration(seconds: 3),
+                backgroundColor: Colors.green,
+                content: Text('Yardım talebiniz silindi.')),
+          );
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+                duration: Duration(seconds: 3),
+                backgroundColor: Colors.red,
+                content: Text('Hata oluştu ! Lütfen tekrar deneyiniz.')),
+          );
+        }
+      },
+    );
+    AlertDialog alert = AlertDialog(
+      title: const Text("Emin misin ? "),
+      content: const Text("Yardım talebini silmek istediğinize emin misiniz ?"),
+      actions: [
+        cancelButton,
+        continueButton,
+      ],
+    );
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
     );
   }
 }

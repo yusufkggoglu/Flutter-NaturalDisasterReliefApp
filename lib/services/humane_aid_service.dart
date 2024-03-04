@@ -28,6 +28,27 @@ class HumaneAidService {
     }
   }
 
+  static Future<List<HumanData>?> getHumanDataByUserId(String id) async {
+    try {
+      var response = await http.get(Uri(
+        host: '10.0.2.2',
+        port: 5011,
+        scheme: 'https',
+        path: "/api/HumaneAid/GetAllByUserId/$id",
+      ));
+      if (response.statusCode == HttpStatus.ok) {
+        var responseBody = jsonDecode(response.body);
+        HumaneAidModel humanModel = HumaneAidModel.fromJson(responseBody);
+        return humanModel.humanData;
+      } else {
+        return null;
+      }
+    } catch (e) {
+      log('Getting data from human data error: ${e.toString()}');
+      return null;
+    }
+  }
+
   static Future<Data?> getByIdHumanData(String id) async {
     try {
       var response = await http.get(Uri(
@@ -73,6 +94,47 @@ class HumaneAidService {
       log('Getting data from human data error: ${e.toString()}');
     }
     return null;
+  }
+
+  static Future<bool?> updateHumanData(String body) async {
+    try {
+      var response = await http.put(
+          Uri(
+            host: '10.0.2.2',
+            port: 5011,
+            scheme: 'https',
+            path: "/api/HumaneAid",
+          ),
+          body: body,
+          headers: {
+            'Content-Type': 'application/json',
+          });
+      if (response.statusCode == HttpStatus.ok) {
+        return true;
+      }
+    } catch (e) {
+      log('Getting data from human data error: ${e.toString()}');
+    }
+    return false;
+  }
+
+  static Future<bool?> deleteHumanData(String id) async {
+    try {
+      var response = await http.delete(Uri(
+        host: '10.0.2.2',
+        port: 5011,
+        scheme: 'https',
+        path: "/api/HumaneAid/$id",
+      ));
+      if (response.statusCode == HttpStatus.ok) {
+        return true;
+      } else {
+        return false;
+      }
+    } catch (e) {
+      log('Getting data from human data error: ${e.toString()}');
+      return null;
+    }
   }
 }
 
