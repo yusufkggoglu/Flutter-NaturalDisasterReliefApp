@@ -1,8 +1,13 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/constants/color.dart';
+import 'package:flutter_application_1/constants/identity.dart';
+import 'package:flutter_application_1/home.dart';
 import 'package:flutter_application_1/humane_aid_add.dart';
 import 'package:flutter_application_1/humane_aid_list_by_user.dart';
 import 'package:flutter_application_1/login.dart';
+import 'package:flutter_application_1/services/identity_server_service.dart';
 import 'package:hexcolor/hexcolor.dart';
 
 class UserInterface extends StatefulWidget {
@@ -13,6 +18,18 @@ class UserInterface extends StatefulWidget {
 }
 
 class _UserInterfaceState extends State<UserInterface> {
+  bool? auth;
+  @override
+  void initState() {
+    super.initState();
+    checkAuthStatus();
+  }
+
+  Future<void> checkAuthStatus() async {
+    auth = await IdentityServerService.checkAuth();
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     // double deviceHeight = MediaQuery.of(context).size.height;
@@ -59,193 +76,212 @@ class _UserInterfaceState extends State<UserInterface> {
                   ),
                 ),
                 // Giriş yapmadıysa
-                Column(
-                  children: [
-                    InkWell(
-                      onTap: () => {},
-                      child: Card(
-                        color: Colors.white,
-                        child: SizedBox(
-                          width: deviceWidth,
-                          // height: deviceHeight / 8,
-                          child: const ListTile(
-                            titleAlignment: ListTileTitleAlignment.center,
-                            leading: Icon(
-                              Icons.add_reaction_rounded,
-                              size: 40,
-                            ),
-                            title: Text(
-                              'Kayıt Ol',
-                              style: TextStyle(fontSize: 20),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                Column(
-                  children: [
-                    InkWell(
-                      onTap: () => {
-                        Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => const Login()))
-                      },
-                      child: Card(
-                        color: Colors.white,
-                        child: SizedBox(
-                          width: deviceWidth,
-                          // height: deviceHeight / 8,
-                          child: const ListTile(
-                            titleAlignment: ListTileTitleAlignment.center,
-                            leading: Icon(
-                              Icons.login,
-                              size: 40,
-                            ),
-                            title: Text(
-                              'Giriş Yap',
-                              style: TextStyle(fontSize: 20),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                // Giriş yaptıysa
 
-                Column(
-                  children: [
-                    InkWell(
-                      onTap: () => {},
-                      child: Card(
-                        color: Colors.white,
-                        child: SizedBox(
-                          width: deviceWidth,
-                          // height: deviceHeight / 8,
-                          child: const ListTile(
-                            titleAlignment: ListTileTitleAlignment.center,
-                            leading: Icon(
-                              Icons.settings,
-                              size: 40,
-                            ),
-                            title: Text(
-                              'Kullanıcı Ayarları',
-                              style: TextStyle(fontSize: 20),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                Column(
-                  children: [
-                    InkWell(
-                      onTap: () => {
-                        Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) =>
-                                const HumaneAidListByUser(id: "string1")))
-                      },
-                      child: Card(
-                        color: Colors.white,
-                        child: SizedBox(
-                          width: deviceWidth,
-                          // height: deviceHeight / 8,
-                          child: const ListTile(
-                            titleAlignment: ListTileTitleAlignment.center,
-                            leading: Icon(
-                              Icons.list,
-                              size: 40,
-                            ),
-                            title: Text(
-                              'Yardım Taleplerim',
-                              style: TextStyle(fontSize: 20),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                Column(
-                  children: [
-                    InkWell(
-                      onTap: () => {},
-                      child: Card(
-                        color: Colors.white,
-                        child: SizedBox(
-                          width: deviceWidth,
-                          // height: deviceHeight / 8,
-                          child: const ListTile(
-                            titleAlignment: ListTileTitleAlignment.center,
-                            leading: Icon(
-                              Icons.add_sharp,
-                              size: 40,
-                            ),
-                            title: Text(
-                              'Temel Yardım Talebinde Bulun',
-                              style: TextStyle(fontSize: 20),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                Column(
-                  children: [
-                    InkWell(
-                      onTap: () => {
-                        Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => const HumaneAidAdd()))
-                      },
-                      child: Card(
-                        color: Colors.white,
-                        child: SizedBox(
-                          width: deviceWidth,
-                          // height: deviceHeight / 8,
-                          child: const ListTile(
-                            titleAlignment: ListTileTitleAlignment.center,
-                            leading: Icon(
-                              Icons.accessibility_new_rounded,
-                              size: 40,
-                            ),
-                            title: Text(
-                              'İnsani Yardım Talebinde Bulun',
-                              style: TextStyle(fontSize: 20),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                Column(
-                  children: [
-                    InkWell(
-                      onTap: () => {},
-                      child: Card(
-                        color: Colors.white,
-                        child: SizedBox(
-                          width: deviceWidth,
-                          // height: deviceHeight / 8,
-                          child: const ListTile(
-                            titleAlignment: ListTileTitleAlignment.center,
-                            leading: Icon(
-                              Icons.exit_to_app_sharp,
-                              size: 40,
-                            ),
-                            title: Text(
-                              'Çıkış',
-                              style: TextStyle(fontSize: 20),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
+                Container(
+                    child: auth == null
+                        ? const Center(
+                            child:
+                                CircularProgressIndicator()) // Yükleme göster
+                        : auth == false // Giriş yapılmamışsa
+                            ? Column(
+                                children: [
+                                  InkWell(
+                                    onTap: () => {},
+                                    child: Card(
+                                      color: Colors.white,
+                                      child: SizedBox(
+                                        width: deviceWidth,
+                                        // height: deviceHeight / 8,
+                                        child: const ListTile(
+                                          titleAlignment:
+                                              ListTileTitleAlignment.center,
+                                          leading: Icon(
+                                            Icons.add_reaction_rounded,
+                                            size: 40,
+                                          ),
+                                          title: Text(
+                                            'Kayıt Ol',
+                                            style: TextStyle(fontSize: 20),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  InkWell(
+                                    onTap: () => {
+                                      Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  const Login()))
+                                    },
+                                    child: Card(
+                                      color: Colors.white,
+                                      child: SizedBox(
+                                        width: deviceWidth,
+                                        // height: deviceHeight / 8,
+                                        child: const ListTile(
+                                          titleAlignment:
+                                              ListTileTitleAlignment.center,
+                                          leading: Icon(
+                                            Icons.login,
+                                            size: 40,
+                                          ),
+                                          title: Text(
+                                            'Giriş Yap',
+                                            style: TextStyle(fontSize: 20),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              )
+                            :
+                            // Giriş yaptıysa
+                            Column(
+                                children: [
+                                  InkWell(
+                                    onTap: () => {},
+                                    child: Card(
+                                      color: Colors.white,
+                                      child: SizedBox(
+                                        width: deviceWidth,
+                                        // height: deviceHeight / 8,
+                                        child: const ListTile(
+                                          titleAlignment:
+                                              ListTileTitleAlignment.center,
+                                          leading: Icon(
+                                            Icons.settings,
+                                            size: 40,
+                                          ),
+                                          title: Text(
+                                            'Kullanıcı Ayarları',
+                                            style: TextStyle(fontSize: 20),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  InkWell(
+                                    onTap: () => {
+                                      Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  const HumaneAidListByUser(
+                                                      id: "user1")))
+                                    },
+                                    child: Card(
+                                      color: Colors.white,
+                                      child: SizedBox(
+                                        width: deviceWidth,
+                                        // height: deviceHeight / 8,
+                                        child: const ListTile(
+                                          titleAlignment:
+                                              ListTileTitleAlignment.center,
+                                          leading: Icon(
+                                            Icons.list,
+                                            size: 40,
+                                          ),
+                                          title: Text(
+                                            'Yardım Taleplerim',
+                                            style: TextStyle(fontSize: 20),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  InkWell(
+                                    onTap: () => {},
+                                    child: Card(
+                                      color: Colors.white,
+                                      child: SizedBox(
+                                        width: deviceWidth,
+                                        // height: deviceHeight / 8,
+                                        child: const ListTile(
+                                          titleAlignment:
+                                              ListTileTitleAlignment.center,
+                                          leading: Icon(
+                                            Icons.add_sharp,
+                                            size: 40,
+                                          ),
+                                          title: Text(
+                                            'Temel Yardım Talebinde Bulun',
+                                            style: TextStyle(fontSize: 20),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  InkWell(
+                                    onTap: () => {
+                                      Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  const HumaneAidAdd()))
+                                    },
+                                    child: Card(
+                                      color: Colors.white,
+                                      child: SizedBox(
+                                        width: deviceWidth,
+                                        // height: deviceHeight / 8,
+                                        child: const ListTile(
+                                          titleAlignment:
+                                              ListTileTitleAlignment.center,
+                                          leading: Icon(
+                                            Icons.accessibility_new_rounded,
+                                            size: 40,
+                                          ),
+                                          title: Text(
+                                            'İnsani Yardım Talebinde Bulun',
+                                            style: TextStyle(fontSize: 20),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  InkWell(
+                                    onTap: () async => {
+                                      await IdentityServerService
+                                          .deleteSecureData(SECURE_NOTE_KEY),
+                                      auth = false,
+                                      setState(() {}),
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                        const SnackBar(
+                                            duration: Duration(seconds: 3),
+                                            backgroundColor: Colors.green,
+                                            content: Text('Çıkış Yapıldı')),
+                                      ),
+                                      Navigator.pushAndRemoveUntil(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                const HomeScreen(),
+                                          ),
+                                          (route) => false)
+                                    },
+                                    child: Card(
+                                      color: Colors.white,
+                                      child: SizedBox(
+                                        width: deviceWidth,
+                                        // height: deviceHeight / 8,
+                                        child: const ListTile(
+                                          titleAlignment:
+                                              ListTileTitleAlignment.center,
+                                          leading: Icon(
+                                            Icons.exit_to_app_sharp,
+                                            size: 40,
+                                          ),
+                                          title: Text(
+                                            'Çıkış',
+                                            style: TextStyle(fontSize: 20),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ))
               ],
             ),
           ),
