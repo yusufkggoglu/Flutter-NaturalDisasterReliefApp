@@ -109,7 +109,7 @@ class HumaneAidService {
           headers: {
             'Content-Type': 'application/json',
           });
-      if (response.statusCode == HttpStatus.ok) {
+      if (response.statusCode == HttpStatus.noContent) {
         return true;
       }
     } catch (e) {

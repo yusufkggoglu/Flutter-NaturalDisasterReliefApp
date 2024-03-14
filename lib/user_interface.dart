@@ -168,7 +168,7 @@ class _UserInterfaceState extends State<UserInterface> {
                                           MaterialPageRoute(
                                               builder: (context) =>
                                                   const HumaneAidListByUser(
-                                                      id: "user1")))
+                                                      id: "string1")))
                                     },
                                     child: Card(
                                       color: Colors.white,

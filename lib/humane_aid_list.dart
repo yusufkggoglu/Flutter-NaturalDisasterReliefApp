@@ -16,9 +16,20 @@ class HumaneAid extends StatefulWidget {
 }
 
 class _HumaneAidState extends State<HumaneAid> {
+  List<HumanData>? humanData;
+  List<HumanData>? humanDataStorage;
+
   @override
   void initState() {
     super.initState();
+    getHumanData();
+    humanDataStorage = humanData;
+  }
+
+  Future<void> getHumanData() async {
+    humanData = await HumaneAidService.getHumanData();
+    setState(() {});
+    humanDataStorage = humanData;
   }
 
   @override
@@ -77,19 +88,15 @@ class _HumaneAidState extends State<HumaneAid> {
                 Padding(
                   padding: const EdgeInsets.all(15),
                   child: CupertinoSearchTextField(
-                    // onChanged: (value) => value,
+                    onChanged: searchHumanData,
                     borderRadius: BorderRadius.circular(20),
                   ),
                 )
               ],
             ),
             Expanded(
-              child: FutureBuilder<List<HumanData>?>(
-                  future: HumaneAidService.getHumanData(),
-                  builder: (context, snapshot) {
-                    var humanData = snapshot.data;
-                    if (snapshot.hasData) {
-                      return ListView.builder(
+                child: humanData != null
+                    ? ListView.builder(
                         itemCount: humanData?.length,
                         itemBuilder: (context, index) {
                           var human = humanData?[index];
@@ -119,17 +126,39 @@ class _HumaneAidState extends State<HumaneAid> {
                             ),
                           );
                         },
-                      );
-                    } else {
-                      return const Center(
-                        child: CircularProgressIndicator(),
-                      );
-                    }
-                  }),
-            ),
+                      )
+                    : const Center(child: CircularProgressIndicator())),
           ],
         ),
       ),
     );
+  }
+
+  Future<void> searchHumanData(String query) async {
+    var input = query.toLowerCase();
+    final suggestions = humanData!.where((humanData) {
+      final name = humanData.name!.toLowerCase();
+      final address = humanData.address!.toLowerCase();
+      final province = humanData.province!.toLowerCase();
+      final district = humanData.district!.toLowerCase();
+      final neighborhood = humanData.neighborhood!.toLowerCase();
+      final description = humanData.description!.toLowerCase();
+      final subTitle = humanData.subTitle!.toLowerCase();
+
+      return name.contains(input) ||
+          address.contains(input) ||
+          province.contains(input) ||
+          district.contains(input) ||
+          neighborhood.contains(input) ||
+          description.contains(input) ||
+          subTitle.contains(input);
+    }).toList();
+    setState(() {
+      if (input.isNotEmpty) {
+        humanData = suggestions;
+      } else {
+        humanData = humanDataStorage;
+      }
+    });
   }
 }
