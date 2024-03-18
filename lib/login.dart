@@ -129,7 +129,7 @@ class _LoginState extends State<Login> {
                               padding: const EdgeInsets.all(14),
                               child: TextFormField(
                                 controller: _passwordController,
-                                obscureText: false,
+                                obscureText: true,
                                 validator: (value) {
                                   if (value == null || value.isEmpty) {
                                     return 'Bu alan boş bırakılamaz!';

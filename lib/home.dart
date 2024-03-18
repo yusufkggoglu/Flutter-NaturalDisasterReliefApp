@@ -1,6 +1,7 @@
 // ignore_for_file: avoid_print
 
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/basis_aid_list.dart';
 import 'package:flutter_application_1/constants/color.dart';
 import 'package:flutter_application_1/humane_aid_list.dart';
 import 'package:flutter_application_1/information.dart';
@@ -98,7 +99,10 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ),
                     InkWell(
-                      onTap: () => {print("Temel Yardım")},
+                      onTap: () => {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => const BasisAid()))
+                      },
                       child: Card(
                         child: SizedBox(
                           width: deviceWidth,
