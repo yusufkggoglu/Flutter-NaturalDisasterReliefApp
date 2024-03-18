@@ -4,6 +4,7 @@ import 'dart:io';
 
 import 'package:flutter_application_1/models/humane_aid_create_response_model.dart';
 import 'package:flutter_application_1/models/humane_aid_model.dart';
+import 'package:flutter_application_1/services/identity_server_service.dart';
 import 'package:http/http.dart' as http;
 
 class HumaneAidService {
@@ -28,8 +29,13 @@ class HumaneAidService {
     }
   }
 
-  static Future<List<HumanData>?> getHumanDataByUserId(String id) async {
+  static Future<List<HumanData>?> getHumanDataByUserId() async {
     try {
+      var user = await IdentityServerService.getAuthUser();
+      if (user == null) {
+        return null;
+      }
+      var id = user.id;
       var response = await http.get(Uri(
         host: '10.0.2.2',
         port: 5011,

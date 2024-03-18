@@ -36,7 +36,6 @@ class _LoginState extends State<Login> {
   @override
   Widget build(BuildContext context) {
     double deviceWidth = MediaQuery.of(context).size.width;
-
     return SafeArea(
       child: Scaffold(
         backgroundColor: HexColor(backgroundColor),

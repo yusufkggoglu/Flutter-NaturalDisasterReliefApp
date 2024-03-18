@@ -7,6 +7,7 @@ import 'package:flutter_application_1/home.dart';
 import 'package:flutter_application_1/humane_aid_add.dart';
 import 'package:flutter_application_1/humane_aid_list_by_user.dart';
 import 'package:flutter_application_1/login.dart';
+import 'package:flutter_application_1/register.dart';
 import 'package:flutter_application_1/services/identity_server_service.dart';
 import 'package:hexcolor/hexcolor.dart';
 
@@ -86,7 +87,12 @@ class _UserInterfaceState extends State<UserInterface> {
                             ? Column(
                                 children: [
                                   InkWell(
-                                    onTap: () => {},
+                                    onTap: () => {
+                                      Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  const Register()))
+                                    },
                                     child: Card(
                                       color: Colors.white,
                                       child: SizedBox(

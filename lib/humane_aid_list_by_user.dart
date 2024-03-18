@@ -73,20 +73,9 @@ class _HumaneAidListByUser extends State<HumaneAidListByUser> {
                 ],
               ),
             ),
-            // Column(
-            //   children: [
-            //     Padding(
-            //       padding: const EdgeInsets.all(15),
-            //       child: CupertinoSearchTextField(
-            //         // onChanged: (value) => value,
-            //         borderRadius: BorderRadius.circular(20),
-            //       ),
-            //     )
-            //   ],
-            // ),
             Expanded(
               child: FutureBuilder<List<HumanData>?>(
-                  future: HumaneAidService.getHumanDataByUserId(widget.id),
+                  future: HumaneAidService.getHumanDataByUserId(),
                   builder: (context, snapshot) {
                     var humanData = snapshot.data;
                     if (snapshot.hasData) {
