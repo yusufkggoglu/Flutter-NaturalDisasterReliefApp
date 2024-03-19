@@ -1,6 +1,11 @@
+// ignore_for_file: sort_child_properties_last, sized_box_for_whitespace
+
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/basis_aid_detail_by_user.dart';
 import 'package:flutter_application_1/constants/color.dart';
 import 'package:flutter_application_1/humane_aid_detail_by_user.dart';
+import 'package:flutter_application_1/models/basis_aid_model.dart';
+import 'package:flutter_application_1/services/basis_aid_service.dart';
 import 'package:flutter_application_1/services/humane_aid_service.dart';
 import 'package:flutter_application_1/user_interface.dart';
 import 'package:hexcolor/hexcolor.dart';
@@ -53,7 +58,7 @@ class _HumaneAidListByUser extends State<HumaneAidListByUser> {
                             fontWeight: FontWeight.w100, fontSize: 14),
                       ),
                       Text(
-                        "İnsani Yardım Taleplerim",
+                        "Yardım Taleplerim",
                         style: TextStyle(
                             fontSize: 24,
                             fontWeight: FontWeight.bold,
@@ -72,6 +77,19 @@ class _HumaneAidListByUser extends State<HumaneAidListByUser> {
                       ))
                 ],
               ),
+            ),
+            Container(
+              child: Card(
+                child: const Text("İnsani Yardım Taleplerim",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 20, color: Colors.white)),
+                color: Colors.red[700],
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+                margin: const EdgeInsets.all(20),
+              ),
+              width: deviceWidth,
             ),
             Expanded(
               child: FutureBuilder<List<HumanData>?>(
@@ -104,6 +122,63 @@ class _HumaneAidListByUser extends State<HumaneAidListByUser> {
                                     style: const TextStyle(fontSize: 20),
                                   ),
                                   subtitle: Text(human?.subTitle ?? 'Null'),
+                                ),
+                              ),
+                            ),
+                          );
+                        },
+                      );
+                    } else {
+                      return const Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    }
+                  }),
+            ),
+            Container(
+              child: Card(
+                child: const Text("Temel Yardım Taleplerim",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 20, color: Colors.white)),
+                color: Colors.red[700],
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+                margin: const EdgeInsets.all(20),
+              ),
+              width: deviceWidth,
+            ),
+            Expanded(
+              child: FutureBuilder<List<BasisAidData>?>(
+                  future: BasisAidService.getBasisAidDataByUserId(),
+                  builder: (context, snapshot) {
+                    var basisAidData = snapshot.data;
+                    if (snapshot.hasData) {
+                      return ListView.builder(
+                        itemCount: basisAidData?.length,
+                        itemBuilder: (context, index) {
+                          var basisAid = basisAidData?[index];
+                          return InkWell(
+                            onTap: () => {
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) => BasisAidDetailByUser(
+                                        id: basisAid!.id.toString(),
+                                      )))
+                            },
+                            child: Card(
+                              child: SizedBox(
+                                width: deviceWidth,
+                                height: deviceHeight / 8,
+                                child: ListTile(
+                                  leading: const Icon(
+                                    Icons.location_on_sharp,
+                                    size: 40,
+                                  ),
+                                  title: Text(
+                                    basisAid?.province.toString() ?? 'Null',
+                                    style: const TextStyle(fontSize: 20),
+                                  ),
+                                  subtitle: Text(basisAid?.subTitle ?? 'Null'),
                                 ),
                               ),
                             ),

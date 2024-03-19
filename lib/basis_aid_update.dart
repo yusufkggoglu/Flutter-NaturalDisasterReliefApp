@@ -1,4 +1,4 @@
-// ignore_for_file: use_build_context_synchronously
+// ignore_for_file: use_build_context_synchronously, unnecessary_null_comparison
 
 import 'dart:convert';
 import 'dart:developer';
@@ -6,19 +6,19 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/constants/color.dart';
 import 'package:flutter_application_1/home.dart';
-import 'package:flutter_application_1/services/humane_aid_service.dart';
+import 'package:flutter_application_1/services/basis_aid_service.dart';
 import 'package:flutter_application_1/user_interface.dart';
 import 'package:hexcolor/hexcolor.dart';
 
-class HumaneAidUpdate extends StatefulWidget {
+class BasisAidUpdate extends StatefulWidget {
   final String id;
-  const HumaneAidUpdate({super.key, required this.id});
+  const BasisAidUpdate({super.key, required this.id});
 
   @override
-  State<HumaneAidUpdate> createState() => _HumaneAidUpdateState();
+  State<BasisAidUpdate> createState() => _BasisAidUpdateState();
 }
 
-class _HumaneAidUpdateState extends State<HumaneAidUpdate> {
+class _BasisAidUpdateState extends State<BasisAidUpdate> {
   final _key = GlobalKey<FormState>();
 
   late final TextEditingController _provinceController;
@@ -28,11 +28,13 @@ class _HumaneAidUpdateState extends State<HumaneAidUpdate> {
   late final TextEditingController _locationUrlController;
   late final TextEditingController _subTitleController;
   late final TextEditingController _descriptionController;
+  late final TextEditingController _amountController;
 
   @override
   void initState() {
     super.initState();
     _provinceController = TextEditingController();
+    _amountController = TextEditingController();
     _districtController = TextEditingController();
     _neighborhoodController = TextEditingController();
     _addressController = TextEditingController();
@@ -45,6 +47,7 @@ class _HumaneAidUpdateState extends State<HumaneAidUpdate> {
   @override
   void dispose() {
     _provinceController.dispose();
+    _amountController.dispose();
     _districtController.dispose();
     _neighborhoodController.dispose();
     _addressController.dispose();
@@ -55,8 +58,9 @@ class _HumaneAidUpdateState extends State<HumaneAidUpdate> {
   }
 
   Future<void> getById() async {
-    var data = await HumaneAidService.getByIdHumanData(widget.id);
+    var data = await BasisAidService.getByIdBasisAidData(widget.id);
     _subTitleController.text = data!.subTitle.toString();
+    _amountController.text = data.amount.toString();
     _descriptionController.text = data.description.toString();
     _provinceController.text = data.province.toString();
     _districtController.text = data.district.toString();
@@ -155,6 +159,27 @@ class _HumaneAidUpdateState extends State<HumaneAidUpdate> {
                                 decoration: const InputDecoration(
                                   border: OutlineInputBorder(),
                                   labelText: 'Yardım İçeriği (Bir kaç kelime)',
+                                ),
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(14),
+                              child: TextFormField(
+                                controller: _amountController,
+                                obscureText: false,
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'Bu alan boş bırakılamaz!';
+                                  } else {
+                                    if (int.parse(value) == null) {
+                                      return 'Geçersiz değer !';
+                                    }
+                                    return null;
+                                  }
+                                },
+                                decoration: const InputDecoration(
+                                  border: OutlineInputBorder(),
+                                  labelText: 'Adet',
                                 ),
                               ),
                             ),
@@ -303,7 +328,7 @@ class _HumaneAidUpdateState extends State<HumaneAidUpdate> {
                                       var subTitle = _subTitleController.text;
                                       var description =
                                           _descriptionController.text;
-
+                                      var amount = _amountController.text;
                                       var body = {
                                         'id': widget.id,
                                         'province': province,
@@ -313,6 +338,7 @@ class _HumaneAidUpdateState extends State<HumaneAidUpdate> {
                                         'locationUrl': locationUrl,
                                         'subTitle': subTitle,
                                         'description': description,
+                                        'amount': amount,
                                         "status": true,
                                         "userId":
                                             "ab4d48a1-caec-4001-af23-208e279f472b",
@@ -320,8 +346,8 @@ class _HumaneAidUpdateState extends State<HumaneAidUpdate> {
                                         "phone": "string",
                                       };
 
-                                      var data = await HumaneAidService
-                                          .updateHumanData(jsonEncode(body));
+                                      var data = await BasisAidService
+                                          .updateBasisAidData(jsonEncode(body));
                                       log('DATA: $data');
                                       if (data != null && data == true) {
                                         ScaffoldMessenger.of(context)
