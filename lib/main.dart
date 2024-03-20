@@ -7,6 +7,7 @@ import 'services/humane_aid_service.dart';
 
 void main() {
   HttpOverrides.global = MyHttpOverrides();
+  // IdentityServerService.deleteSecureData(SECURE_NOTE_KEY);
   runApp(const MyApp());
 }
 

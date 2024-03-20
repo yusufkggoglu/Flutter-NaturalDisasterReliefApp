@@ -4,41 +4,37 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/constants/color.dart';
+import 'package:flutter_application_1/constants/identity.dart';
 import 'package:flutter_application_1/home.dart';
 import 'package:flutter_application_1/services/identity_server_service.dart';
 import 'package:flutter_application_1/user_interface.dart';
 import 'package:hexcolor/hexcolor.dart';
 
-class Register extends StatefulWidget {
-  const Register({super.key});
+class UserChangePassword extends StatefulWidget {
+  const UserChangePassword({super.key});
 
   @override
-  State<Register> createState() => _RegisterState();
+  State<UserChangePassword> createState() => _UserChangePasswordState();
 }
 
-class _RegisterState extends State<Register> {
+class _UserChangePasswordState extends State<UserChangePassword> {
   final _key = GlobalKey<FormState>();
-  late final TextEditingController _usernameController;
-  late final TextEditingController _passwordController;
-  late final TextEditingController _passwordCheckController;
-  late final TextEditingController _emailController;
-  late final TextEditingController _cityController;
-  late final TextEditingController _phoneController;
-
+  late final TextEditingController _oldPasswordController;
+  late final TextEditingController _newPasswordController;
+  late final TextEditingController _newPassword2Controller;
   @override
   void initState() {
     super.initState();
-    _usernameController = TextEditingController();
-    _passwordController = TextEditingController();
-    _passwordCheckController = TextEditingController();
-    _emailController = TextEditingController();
-    _cityController = TextEditingController();
-    _phoneController = TextEditingController();
+    _oldPasswordController = TextEditingController();
+    _newPasswordController = TextEditingController();
+    _newPassword2Controller = TextEditingController();
   }
 
   @override
   void dispose() {
-    _usernameController.dispose();
+    _oldPasswordController.dispose();
+    _newPasswordController.dispose();
+    _newPassword2Controller.dispose();
     super.dispose();
   }
 
@@ -74,7 +70,7 @@ class _RegisterState extends State<Register> {
                                 fontWeight: FontWeight.w100, fontSize: 14),
                           ),
                           Text(
-                            "Kayıt Ol",
+                            "Şifre İşlemleri",
                             style: TextStyle(
                                 fontSize: 24,
                                 fontWeight: FontWeight.bold,
@@ -115,136 +111,60 @@ class _RegisterState extends State<Register> {
                             Padding(
                               padding: const EdgeInsets.all(14),
                               child: TextFormField(
-                                controller: _usernameController,
+                                controller: _oldPasswordController,
                                 obscureText: false,
                                 validator: (value) {
                                   if (value == null || value.isEmpty) {
                                     return 'Bu alan boş bırakılamaz!';
                                   } else {
-                                    if (value.length >= 5) {
-                                      return null;
-                                    } else {
-                                      return 'Alan en az 5 harften oluşmalıdır !';
-                                    }
+                                    return null;
                                   }
                                 },
                                 decoration: const InputDecoration(
                                   border: OutlineInputBorder(),
-                                  labelText: 'Kullanıcı Adı',
+                                  labelText: 'Eski Şifre',
                                 ),
                               ),
                             ),
                             Padding(
                               padding: const EdgeInsets.all(14),
                               child: TextFormField(
-                                controller: _passwordController,
-                                obscureText: true,
+                                controller: _newPasswordController,
+                                obscureText: false,
                                 validator: (value) {
                                   if (value == null || value.isEmpty) {
                                     return 'Bu alan boş bırakılamaz!';
                                   } else {
-                                    if (value.length >= 8) {
-                                      return null;
-                                    } else {
-                                      return 'Alan en az 8 harften oluşmalıdır !';
-                                    }
-                                  }
-                                },
-                                decoration: const InputDecoration(
-                                  border: OutlineInputBorder(),
-                                  labelText: 'Şifre',
-                                ),
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.all(14),
-                              child: TextFormField(
-                                controller: _passwordCheckController,
-                                obscureText: true,
-                                validator: (value) {
-                                  if (value == null || value.isEmpty) {
-                                    return 'Bu alan boş bırakılamaz!';
-                                  } else {
-                                    if (value != _passwordController.text) {
+                                    if (_newPassword2Controller.text != value) {
                                       return 'Şifreler uyuşmuyor !';
                                     }
-                                    if (value.length >= 8) {
-                                      return null;
-                                    } else {
-                                      return 'Alan en az 8 harften oluşmalıdır !';
-                                    }
+                                    return null;
                                   }
                                 },
                                 decoration: const InputDecoration(
                                   border: OutlineInputBorder(),
-                                  labelText: 'Tekrar Şifre',
+                                  labelText: 'Yeni Şifre',
                                 ),
                               ),
                             ),
                             Padding(
                               padding: const EdgeInsets.all(14),
                               child: TextFormField(
-                                controller: _emailController,
+                                controller: _newPassword2Controller,
                                 obscureText: false,
                                 validator: (value) {
                                   if (value == null || value.isEmpty) {
                                     return 'Bu alan boş bırakılamaz!';
                                   } else {
-                                    if (value.length >= 5) {
-                                      return null;
-                                    } else {
-                                      return 'Alan en az 5 harften oluşmalıdır !';
+                                    if (_newPasswordController.text != value) {
+                                      return 'Şifreler uyuşmuyor !';
                                     }
+                                    return null;
                                   }
                                 },
                                 decoration: const InputDecoration(
                                   border: OutlineInputBorder(),
-                                  labelText: 'Email',
-                                ),
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.all(14),
-                              child: TextFormField(
-                                controller: _cityController,
-                                obscureText: false,
-                                validator: (value) {
-                                  if (value == null || value.isEmpty) {
-                                    return 'Bu alan boş bırakılamaz!';
-                                  } else {
-                                    if (value.length >= 3) {
-                                      return null;
-                                    } else {
-                                      return 'Alan en az 3 harften oluşmalıdır !';
-                                    }
-                                  }
-                                },
-                                decoration: const InputDecoration(
-                                  border: OutlineInputBorder(),
-                                  labelText: 'Şehir',
-                                ),
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.all(14),
-                              child: TextFormField(
-                                controller: _phoneController,
-                                keyboardType: TextInputType.number,
-                                obscureText: false,
-                                validator: (value) {
-                                  if (value == null || value.isEmpty) {
-                                    return 'Bu alan boş bırakılamaz!';
-                                  } else {
-                                    if (value.length == 11) {
-                                      return null;
-                                    } else {
-                                      return 'Alan 11 karakterden oluşmalıdır !';
-                                    }
-                                  }
-                                },
-                                decoration: const InputDecoration(
-                                  border: OutlineInputBorder(),
-                                  labelText: 'Telefon Numarası',
+                                  labelText: 'Yeni Şifre Tekrar',
                                 ),
                               ),
                             ),
@@ -256,31 +176,26 @@ class _RegisterState extends State<Register> {
                                 child: ElevatedButton(
                                   onPressed: () async {
                                     if (_key.currentState!.validate()) {
-                                      var username = _usernameController.text;
-                                      var passwd = _passwordController.text;
-                                      var city = _cityController.text;
-                                      var email = _emailController.text;
-                                      var phone = _phoneController.text;
-
+                                      var oldPassword =
+                                          _oldPasswordController.text;
+                                      var newPassword =
+                                          _newPasswordController.text;
                                       var body = {
-                                        'UserName': username,
-                                        'Email': email,
-                                        'Password': passwd,
-                                        'City': city,
-                                        'PhoneNumber': phone
+                                        'OldPassword': oldPassword.toString(),
+                                        'NewPassword': newPassword.toString(),
                                       };
-
-                                      var data =
-                                          await IdentityServerService.register(
-                                              jsonEncode(body));
-                                      if (data == true) {
+                                      var data = await IdentityServerService
+                                          .changePassword(jsonEncode(body));
+                                      if (data != null) {
+                                        IdentityServerService.deleteSecureData(
+                                            SECURE_NOTE_KEY);
                                         ScaffoldMessenger.of(context)
                                             .showSnackBar(
                                           const SnackBar(
                                               duration: Duration(seconds: 3),
                                               backgroundColor: Colors.green,
                                               content: Text(
-                                                  'Kayıt yapıldı , Giriş yapabilirsiniz.')),
+                                                  'Şifren değiştirildi, Lütfen tekrar giriş yapınız !')),
                                         );
                                         Navigator.pushAndRemoveUntil(
                                             context,
@@ -296,13 +211,13 @@ class _RegisterState extends State<Register> {
                                               duration: Duration(seconds: 3),
                                               backgroundColor: Colors.red,
                                               content: Text(
-                                                  'Kayıt yapılamadı, Tekrar deneyiniz.')),
+                                                  'Bilgiler hatalı , Tekrar deneyiniz.')),
                                         );
                                       }
                                     }
                                   },
                                   child: const Text(
-                                    'Kayıt Ol',
+                                    'Giriş Yap',
                                     style: TextStyle(fontSize: 20),
                                   ),
                                 ),

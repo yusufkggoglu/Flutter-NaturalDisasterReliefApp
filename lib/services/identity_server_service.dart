@@ -139,4 +139,60 @@ class IdentityServerService {
       return null;
     }
   }
+
+  static Future<bool?> updateUserInfo(String body) async {
+    try {
+      var token = await readSecureData(SECURE_NOTE_KEY);
+      if (token == null) {
+        return null;
+      }
+      var response = await http.post(
+          Uri(
+            host: '10.0.2.2',
+            port: 5001,
+            scheme: 'https',
+            path: "/api/user/updateinfo",
+          ),
+          body: body,
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer $token',
+          });
+      if (response.statusCode == HttpStatus.ok) {
+        return true;
+      }
+    } catch (e) {
+      log('Getting data error: ${e.toString()}');
+      return false;
+    }
+    return false;
+  }
+
+  static Future<bool?> changePassword(String body) async {
+    try {
+      var token = await readSecureData(SECURE_NOTE_KEY);
+      if (token == null) {
+        return null;
+      }
+      var response = await http.post(
+          Uri(
+            host: '10.0.2.2',
+            port: 5001,
+            scheme: 'https',
+            path: "/api/user/updatepassword",
+          ),
+          body: body,
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer $token',
+          });
+      if (response.statusCode == HttpStatus.ok) {
+        return true;
+      }
+    } catch (e) {
+      log('Getting data error: ${e.toString()}');
+      return false;
+    }
+    return false;
+  }
 }

@@ -1,21 +1,14 @@
-class UserInfo {
-  String? id;
+class UserInfoUpdate {
   String? userName;
   String? email;
   String? city;
   String? phoneNumber;
   String? name;
 
-  UserInfo(
-      {this.id,
-      this.userName,
-      this.email,
-      this.city,
-      this.phoneNumber,
-      this.name});
+  UserInfoUpdate(
+      {this.userName, this.email, this.city, this.phoneNumber, this.name});
 
-  UserInfo.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
+  UserInfoUpdate.fromJson(Map<String, dynamic> json) {
     userName = json['userName'];
     email = json['email'];
     city = json['city'];
@@ -25,7 +18,6 @@ class UserInfo {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
-    data['id'] = id;
     data['userName'] = userName;
     data['email'] = email;
     data['city'] = city;

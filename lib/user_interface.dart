@@ -10,6 +10,7 @@ import 'package:flutter_application_1/user_aids_list.dart';
 import 'package:flutter_application_1/login.dart';
 import 'package:flutter_application_1/register.dart';
 import 'package:flutter_application_1/services/identity_server_service.dart';
+import 'package:flutter_application_1/user_settings.dart';
 import 'package:hexcolor/hexcolor.dart';
 
 class UserInterface extends StatefulWidget {
@@ -36,7 +37,6 @@ class _UserInterfaceState extends State<UserInterface> {
   Widget build(BuildContext context) {
     // double deviceHeight = MediaQuery.of(context).size.height;
     double deviceWidth = MediaQuery.of(context).size.width;
-
     return SafeArea(
       child: Scaffold(
         backgroundColor: HexColor(backgroundColor),
@@ -148,7 +148,12 @@ class _UserInterfaceState extends State<UserInterface> {
                             Column(
                                 children: [
                                   InkWell(
-                                    onTap: () => {},
+                                    onTap: () => {
+                                      Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  const UserSettings()))
+                                    },
                                     child: Card(
                                       color: Colors.white,
                                       child: SizedBox(
