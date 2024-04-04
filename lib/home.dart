@@ -5,6 +5,7 @@ import 'package:flutter_application_1/basis_aid_list.dart';
 import 'package:flutter_application_1/constants/color.dart';
 import 'package:flutter_application_1/humane_aid_list.dart';
 import 'package:flutter_application_1/information.dart';
+import 'package:flutter_application_1/user_interface.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -30,7 +31,7 @@ class _HomeScreenState extends State<HomeScreen> {
             child: Column(children: [
               Container(
                   width: deviceWidth,
-                  height: deviceHeight / 4,
+                  height: deviceHeight / 5,
                   decoration: const BoxDecoration(
                       color: Colors.purple,
                       image: DecorationImage(
@@ -142,6 +143,21 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               )
             ]),
+          ),
+        ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            Navigator.of(context).push(
+                MaterialPageRoute(builder: (context) => const UserInterface()));
+          },
+          backgroundColor: Colors.white,
+          tooltip: 'Artım',
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(30.0),
+          ),
+          child: const Icon(
+            Icons.person,
+            size: 30,
           ),
         ),
       ),

@@ -74,6 +74,11 @@ class _UserInterfaceState extends State<UserInterface> {
                           ),
                         ],
                       ),
+                      const InkWell(
+                          child: Icon(
+                        Icons.person,
+                        size: 30,
+                      ))
                     ],
                   ),
                 ),
