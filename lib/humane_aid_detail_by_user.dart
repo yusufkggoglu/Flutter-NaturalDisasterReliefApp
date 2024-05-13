@@ -8,6 +8,7 @@ import 'package:flutter_application_1/models/humane_aid_create_response_model.da
 import 'package:flutter_application_1/services/humane_aid_service.dart';
 import 'package:flutter_application_1/user_interface.dart';
 import 'package:hexcolor/hexcolor.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class HumaneAidDetailByUser extends StatefulWidget {
   final String id;
@@ -210,20 +211,22 @@ class _HumaneAidDetailByUser extends State<HumaneAidDetailByUser> {
                                     'Konum Url',
                                     style: TextStyle(fontSize: 20),
                                   ),
-                                  subtitle: Text(
-                                    humanData.locationUrl.toString(),
-                                    style: const TextStyle(fontSize: 17),
-                                  ),
-                                ),
-                                const Divider(),
-                                ListTile(
-                                  title: const Text(
-                                    'İstenilen Yardım',
-                                    style: TextStyle(fontSize: 20),
-                                  ),
-                                  subtitle: Text(
-                                    humanData.subTitle.toString(),
-                                    style: const TextStyle(fontSize: 17),
+                                  subtitle: InkWell(
+                                    onTap: () {
+                                      // ignore: deprecated_member_use
+                                      launch(humanData.locationUrl
+                                          .toString()); // basisAidData.locationUrl burada tıklanabilir URL'yi içermelidir
+                                    },
+                                    child: Text(
+                                      humanData.locationUrl.toString(),
+                                      style: const TextStyle(
+                                        fontSize: 17,
+                                        color: Colors
+                                            .blue, // Linkin mavi renkte olmasını sağlar
+                                        decoration: TextDecoration
+                                            .underline, // Linkin altını çizer
+                                      ),
+                                    ),
                                   ),
                                 ),
                                 const Divider(),

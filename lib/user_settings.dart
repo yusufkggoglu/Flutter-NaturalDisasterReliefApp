@@ -96,11 +96,22 @@ class _UserSettingsState extends State<UserSettings> {
                               children: [
                                 ListTile(
                                   title: const Text(
-                                    'Ad Soyad',
+                                    'Ad',
                                     style: TextStyle(fontSize: 20),
                                   ),
                                   subtitle: Text(
                                     data!.name.toString(),
+                                    style: const TextStyle(fontSize: 17),
+                                  ),
+                                ),
+                                const Divider(),
+                                ListTile(
+                                  title: const Text(
+                                    'Soyad',
+                                    style: TextStyle(fontSize: 20),
+                                  ),
+                                  subtitle: Text(
+                                    data.surname.toString(),
                                     style: const TextStyle(fontSize: 17),
                                   ),
                                 ),

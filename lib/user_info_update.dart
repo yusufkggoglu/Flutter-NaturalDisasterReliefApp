@@ -24,6 +24,7 @@ class _UserInfoUpdateState extends State<UserInfoUpdate> {
   late final TextEditingController _emailController;
   late final TextEditingController _cityController;
   late final TextEditingController _nameController;
+  late final TextEditingController _surnameController;
   late final TextEditingController _phoneNumberController;
 
   @override
@@ -31,6 +32,7 @@ class _UserInfoUpdateState extends State<UserInfoUpdate> {
     super.initState();
     _usernameController = TextEditingController();
     _emailController = TextEditingController();
+    _surnameController = TextEditingController();
     _cityController = TextEditingController();
     _nameController = TextEditingController();
     _phoneNumberController = TextEditingController();
@@ -41,6 +43,7 @@ class _UserInfoUpdateState extends State<UserInfoUpdate> {
   void dispose() {
     _usernameController.dispose();
     _emailController.dispose();
+    _surnameController.dispose();
     _cityController.dispose();
     _nameController.dispose();
     _phoneNumberController.dispose();
@@ -53,6 +56,7 @@ class _UserInfoUpdateState extends State<UserInfoUpdate> {
     _emailController.text = data.email.toString();
     _cityController.text = data.city.toString();
     _nameController.text = data.name.toString();
+    _surnameController.text = data.surname.toString();
     _phoneNumberController.text = data.phoneNumber.toString();
     setState(() {});
   }
@@ -145,7 +149,29 @@ class _UserInfoUpdateState extends State<UserInfoUpdate> {
                                 },
                                 decoration: const InputDecoration(
                                   border: OutlineInputBorder(),
-                                  labelText: 'Ad Soyad *',
+                                  labelText: 'Ad',
+                                ),
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(14),
+                              child: TextFormField(
+                                controller: _surnameController,
+                                obscureText: false,
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'Bu alan boş bırakılamaz!';
+                                  } else {
+                                    if (value.length >= 3) {
+                                      return null;
+                                    } else {
+                                      return 'Alan en az 3 harften oluşmalıdır !';
+                                    }
+                                  }
+                                },
+                                decoration: const InputDecoration(
+                                  border: OutlineInputBorder(),
+                                  labelText: 'Soyad',
                                 ),
                               ),
                             ),
@@ -250,11 +276,13 @@ class _UserInfoUpdateState extends State<UserInfoUpdate> {
                                       var city = _cityController.text;
                                       var phoneNumber =
                                           _phoneNumberController.text;
+                                      var surname = _surnameController.text;
                                       var body = {
                                         'userName': username.toString(),
                                         'email': email.toLowerCase(),
                                         'city': city.toLowerCase(),
                                         'name': name.toString(),
+                                        'surname': surname,
                                         'phoneNumber': phoneNumber.toString(),
                                       };
 

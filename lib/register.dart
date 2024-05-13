@@ -1,4 +1,4 @@
-// ignore_for_file: use_build_context_synchronously
+// ignore_for_file: use_build_context_synchronously, unnecessary_null_comparison
 
 import 'dart:convert';
 
@@ -19,6 +19,10 @@ class Register extends StatefulWidget {
 class _RegisterState extends State<Register> {
   final _key = GlobalKey<FormState>();
   late final TextEditingController _usernameController;
+  late final TextEditingController _nameController;
+  late final TextEditingController _surnameController;
+  late final TextEditingController _tcController;
+  late final TextEditingController _birthDateController;
   late final TextEditingController _passwordController;
   late final TextEditingController _passwordCheckController;
   late final TextEditingController _emailController;
@@ -29,6 +33,10 @@ class _RegisterState extends State<Register> {
   void initState() {
     super.initState();
     _usernameController = TextEditingController();
+    _nameController = TextEditingController();
+    _surnameController = TextEditingController();
+    _tcController = TextEditingController();
+    _birthDateController = TextEditingController();
     _passwordController = TextEditingController();
     _passwordCheckController = TextEditingController();
     _emailController = TextEditingController();
@@ -137,6 +145,100 @@ class _RegisterState extends State<Register> {
                             Padding(
                               padding: const EdgeInsets.all(14),
                               child: TextFormField(
+                                controller: _nameController,
+                                obscureText: false,
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'Bu alan boş bırakılamaz!';
+                                  } else {
+                                    if (value.length >= 3) {
+                                      return null;
+                                    } else {
+                                      return 'Alan en az 3 harften oluşmalıdır !';
+                                    }
+                                  }
+                                },
+                                decoration: const InputDecoration(
+                                  border: OutlineInputBorder(),
+                                  labelText: 'Ad',
+                                ),
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(14),
+                              child: TextFormField(
+                                controller: _surnameController,
+                                obscureText: false,
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'Bu alan boş bırakılamaz!';
+                                  } else {
+                                    if (value.length >= 3) {
+                                      return null;
+                                    } else {
+                                      return 'Alan en az 3 harften oluşmalıdır !';
+                                    }
+                                  }
+                                },
+                                decoration: const InputDecoration(
+                                  border: OutlineInputBorder(),
+                                  labelText: 'Soyad',
+                                ),
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(14),
+                              child: TextFormField(
+                                controller: _tcController,
+                                obscureText: false,
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'Bu alan boş bırakılamaz!';
+                                  }
+                                  if (value.length != 11) {
+                                    return 'TC kimlik numarası 11 karakterden oluşmalıdır !';
+                                  }
+                                  try {
+                                    int.parse(value);
+                                    return null;
+                                  } catch (e) {
+                                    return 'Bu alan sadece sayılardan oluşmalıdır!';
+                                  }
+                                },
+                                decoration: const InputDecoration(
+                                  border: OutlineInputBorder(),
+                                  labelText: 'TC Kimlik Numarası',
+                                ),
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(14),
+                              child: TextFormField(
+                                controller: _birthDateController,
+                                obscureText: false,
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'Bu alan boş bırakılamaz!';
+                                  }
+                                  if (value.length != 4) {
+                                    return 'Doğum yılı 4 karakterden oluşmalıdır !';
+                                  }
+                                  try {
+                                    int.parse(value);
+                                    return null;
+                                  } catch (e) {
+                                    return 'Bu alan sadece sayılardan oluşmalıdır!';
+                                  }
+                                },
+                                decoration: const InputDecoration(
+                                  border: OutlineInputBorder(),
+                                  labelText: 'Doğum Yılı',
+                                ),
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(14),
+                              child: TextFormField(
                                 controller: _passwordController,
                                 obscureText: true,
                                 validator: (value) {
@@ -144,9 +246,25 @@ class _RegisterState extends State<Register> {
                                     return 'Bu alan boş bırakılamaz!';
                                   } else {
                                     if (value.length >= 8) {
-                                      return null;
+                                      bool hasUpperCase = false;
+                                      bool hasLowerCase = false;
+                                      for (int i = 0; i < value.length; i++) {
+                                        if (value[i] ==
+                                            value[i].toUpperCase()) {
+                                          hasUpperCase = true;
+                                        }
+                                        if (value[i] ==
+                                            value[i].toLowerCase()) {
+                                          hasLowerCase = true;
+                                        }
+                                      }
+                                      if (hasUpperCase && hasLowerCase) {
+                                        return null;
+                                      } else {
+                                        return 'Alan en az bir büyük ve bir küçük harf içermelidir!';
+                                      }
                                     } else {
-                                      return 'Alan en az 8 harften oluşmalıdır !';
+                                      return 'Alan en az 8 karakterden oluşmalıdır!';
                                     }
                                   }
                                 },
@@ -257,6 +375,10 @@ class _RegisterState extends State<Register> {
                                   onPressed: () async {
                                     if (_key.currentState!.validate()) {
                                       var username = _usernameController.text;
+                                      var name = _nameController.text;
+                                      var surname = _surnameController.text;
+                                      var tc = _tcController.text;
+                                      var birthDate = _birthDateController.text;
                                       var passwd = _passwordController.text;
                                       var city = _cityController.text;
                                       var email = _emailController.text;
@@ -264,16 +386,22 @@ class _RegisterState extends State<Register> {
 
                                       var body = {
                                         'UserName': username,
+                                        'Name': name,
+                                        'Surname': surname,
+                                        'TC': int.parse(tc),
+                                        'BirthYear': int.parse(birthDate),
                                         'Email': email,
                                         'Password': passwd,
                                         'City': city,
                                         'PhoneNumber': phone
                                       };
+                                      String? errorMessage;
 
-                                      var data =
+                                      String? data =
                                           await IdentityServerService.register(
                                               jsonEncode(body));
-                                      if (data == true) {
+                                      errorMessage = data;
+                                      if (errorMessage == "success") {
                                         ScaffoldMessenger.of(context)
                                             .showSnackBar(
                                           const SnackBar(
@@ -292,11 +420,13 @@ class _RegisterState extends State<Register> {
                                       } else {
                                         ScaffoldMessenger.of(context)
                                             .showSnackBar(
-                                          const SnackBar(
-                                              duration: Duration(seconds: 3),
+                                          SnackBar(
+                                              duration:
+                                                  const Duration(seconds: 3),
                                               backgroundColor: Colors.red,
-                                              content: Text(
-                                                  'Kayıt yapılamadı, Tekrar deneyiniz.')),
+                                              content: Text(errorMessage != null
+                                                  ? data.toString()
+                                                  : 'Kayıt yapıldı , Giriş yapabilirsiniz.')),
                                         );
                                       }
                                     }

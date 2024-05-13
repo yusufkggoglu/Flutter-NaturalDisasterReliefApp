@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 import 'package:flutter_application_1/constants/identity.dart';
+import 'package:flutter_application_1/models/error_response_model.dart';
 import 'package:flutter_application_1/models/login_response_model.dart';
 import 'package:flutter_application_1/models/user_info_model.dart';
 import 'package:http/http.dart' as http;
@@ -63,7 +64,7 @@ class IdentityServerService {
     return null;
   }
 
-  static Future<bool> register(String body) async {
+  static Future<String> register(String body) async {
     try {
       var response = await http.post(
           Uri(
@@ -77,13 +78,20 @@ class IdentityServerService {
             'Content-Type': 'application/json',
           });
       if (response.statusCode == HttpStatus.noContent) {
-        return true;
+        return "success";
+      }
+      if (response.statusCode == HttpStatus.badRequest) {
+        var responseBody = jsonDecode(response.body);
+        ErrorResponse errorResponse = ErrorResponse.fromJson(responseBody);
+        var message = errorResponse.errors.toString();
+        message = message.replaceAll('[', ' ').replaceAll(']', ' ');
+        return message;
       }
     } catch (e) {
       log('Authenticate error: ${e.toString()}');
-      return false;
+      return "Yolunma gitmeyen bir şeyler var. Tekrar deneyiniz !";
     }
-    return false;
+    return "Yolunma gitmeyen bir şeyler var. Tekrar deneyiniz !";
   }
 
   static Future<bool> checkAuth() async {

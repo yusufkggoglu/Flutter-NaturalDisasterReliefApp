@@ -8,6 +8,7 @@ import 'package:flutter_application_1/models/basis_aid_create_response_model.dar
 import 'package:flutter_application_1/services/basis_aid_service.dart';
 import 'package:flutter_application_1/user_interface.dart';
 import 'package:hexcolor/hexcolor.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class BasisAidDetailByUser extends StatefulWidget {
   final String id;
@@ -212,9 +213,22 @@ class _BasisAidDetailByUserState extends State<BasisAidDetailByUser> {
                                     'Konum Url',
                                     style: TextStyle(fontSize: 20),
                                   ),
-                                  subtitle: Text(
-                                    data.locationUrl.toString(),
-                                    style: const TextStyle(fontSize: 17),
+                                  subtitle: InkWell(
+                                    onTap: () {
+                                      // ignore: deprecated_member_use
+                                      launch(data.locationUrl
+                                          .toString()); // basisAidData.locationUrl burada tıklanabilir URL'yi içermelidir
+                                    },
+                                    child: Text(
+                                      data.locationUrl.toString(),
+                                      style: const TextStyle(
+                                        fontSize: 17,
+                                        color: Colors
+                                            .blue, // Linkin mavi renkte olmasını sağlar
+                                        decoration: TextDecoration
+                                            .underline, // Linkin altını çizer
+                                      ),
+                                    ),
                                   ),
                                 ),
                                 const Divider(),
