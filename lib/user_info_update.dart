@@ -23,8 +23,8 @@ class _UserInfoUpdateState extends State<UserInfoUpdate> {
   late final TextEditingController _usernameController;
   late final TextEditingController _emailController;
   late final TextEditingController _cityController;
-  late final TextEditingController _nameController;
-  late final TextEditingController _surnameController;
+  // late final TextEditingController _nameController;
+  // late final TextEditingController _surnameController;
   late final TextEditingController _phoneNumberController;
 
   @override
@@ -32,9 +32,9 @@ class _UserInfoUpdateState extends State<UserInfoUpdate> {
     super.initState();
     _usernameController = TextEditingController();
     _emailController = TextEditingController();
-    _surnameController = TextEditingController();
+    // _surnameController = TextEditingController();
     _cityController = TextEditingController();
-    _nameController = TextEditingController();
+    // _nameController = TextEditingController();
     _phoneNumberController = TextEditingController();
     getById();
   }
@@ -43,9 +43,9 @@ class _UserInfoUpdateState extends State<UserInfoUpdate> {
   void dispose() {
     _usernameController.dispose();
     _emailController.dispose();
-    _surnameController.dispose();
+    // _surnameController.dispose();
     _cityController.dispose();
-    _nameController.dispose();
+    // _nameController.dispose();
     _phoneNumberController.dispose();
     super.dispose();
   }
@@ -55,8 +55,8 @@ class _UserInfoUpdateState extends State<UserInfoUpdate> {
     _usernameController.text = data!.userName.toString();
     _emailController.text = data.email.toString();
     _cityController.text = data.city.toString();
-    _nameController.text = data.name.toString();
-    _surnameController.text = data.surname.toString();
+    // _nameController.text = data.name.toString();
+    // _surnameController.text = data.surname.toString();
     _phoneNumberController.text = data.phoneNumber.toString();
     setState(() {});
   }
@@ -131,50 +131,50 @@ class _UserInfoUpdateState extends State<UserInfoUpdate> {
                         key: _key,
                         child: Column(
                           children: [
-                            Padding(
-                              padding: const EdgeInsets.all(14),
-                              child: TextFormField(
-                                controller: _nameController,
-                                obscureText: false,
-                                validator: (value) {
-                                  if (value == null || value.isEmpty) {
-                                    return 'Bu alan boş bırakılamaz!';
-                                  } else {
-                                    if (value.length >= 3) {
-                                      return null;
-                                    } else {
-                                      return 'Alan en az 3 harften oluşmalıdır !';
-                                    }
-                                  }
-                                },
-                                decoration: const InputDecoration(
-                                  border: OutlineInputBorder(),
-                                  labelText: 'Ad',
-                                ),
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.all(14),
-                              child: TextFormField(
-                                controller: _surnameController,
-                                obscureText: false,
-                                validator: (value) {
-                                  if (value == null || value.isEmpty) {
-                                    return 'Bu alan boş bırakılamaz!';
-                                  } else {
-                                    if (value.length >= 3) {
-                                      return null;
-                                    } else {
-                                      return 'Alan en az 3 harften oluşmalıdır !';
-                                    }
-                                  }
-                                },
-                                decoration: const InputDecoration(
-                                  border: OutlineInputBorder(),
-                                  labelText: 'Soyad',
-                                ),
-                              ),
-                            ),
+                            // Padding(
+                            //   padding: const EdgeInsets.all(14),
+                            //   child: TextFormField(
+                            //     controller: _nameController,
+                            //     obscureText: false,
+                            //     validator: (value) {
+                            //       if (value == null || value.isEmpty) {
+                            //         return 'Bu alan boş bırakılamaz!';
+                            //       } else {
+                            //         if (value.length >= 3) {
+                            //           return null;
+                            //         } else {
+                            //           return 'Alan en az 3 harften oluşmalıdır !';
+                            //         }
+                            //       }
+                            //     },
+                            //     decoration: const InputDecoration(
+                            //       border: OutlineInputBorder(),
+                            //       labelText: 'Ad',
+                            //     ),
+                            //   ),
+                            // ),
+                            // Padding(
+                            //   padding: const EdgeInsets.all(14),
+                            //   child: TextFormField(
+                            //     controller: _surnameController,
+                            //     obscureText: false,
+                            //     validator: (value) {
+                            //       if (value == null || value.isEmpty) {
+                            //         return 'Bu alan boş bırakılamaz!';
+                            //       } else {
+                            //         if (value.length >= 3) {
+                            //           return null;
+                            //         } else {
+                            //           return 'Alan en az 3 harften oluşmalıdır !';
+                            //         }
+                            //       }
+                            //     },
+                            //     decoration: const InputDecoration(
+                            //       border: OutlineInputBorder(),
+                            //       labelText: 'Soyad',
+                            //     ),
+                            //   ),
+                            // ),
                             Padding(
                               padding: const EdgeInsets.all(14),
                               child: TextFormField(
@@ -270,19 +270,19 @@ class _UserInfoUpdateState extends State<UserInfoUpdate> {
                                 child: ElevatedButton(
                                   onPressed: () async {
                                     if (_key.currentState!.validate()) {
-                                      var name = _nameController.text;
+                                      // var name = _nameController.text;
                                       var username = _usernameController.text;
                                       var email = _emailController.text;
                                       var city = _cityController.text;
                                       var phoneNumber =
                                           _phoneNumberController.text;
-                                      var surname = _surnameController.text;
+                                      // var surname = _surnameController.text;
                                       var body = {
                                         'userName': username.toString(),
                                         'email': email.toLowerCase(),
                                         'city': city.toLowerCase(),
-                                        'name': name.toString(),
-                                        'surname': surname,
+                                        // 'name': name.toString(),
+                                        // 'surname': surname,
                                         'phoneNumber': phoneNumber.toString(),
                                       };
 

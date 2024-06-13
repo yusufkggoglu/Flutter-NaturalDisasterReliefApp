@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 
+import 'package:flutter_application_1/constants/identity.dart';
 import 'package:flutter_application_1/models/basis_aid_create_response_model.dart';
 import 'package:flutter_application_1/models/basis_aid_model.dart';
 import 'package:flutter_application_1/services/identity_server_service.dart';
@@ -10,12 +11,21 @@ import 'package:http/http.dart' as http;
 class BasisAidService {
   static Future<List<BasisAidData>?> getBasisAidData() async {
     try {
-      var response = await http.get(Uri(
-        host: '10.0.2.2',
-        port: 5011,
-        scheme: 'https',
-        path: "/api/BasisAid",
-      ));
+      var token = await IdentityServerService.readSecureData(SECURE_NOTE_KEY);
+      if (token == null) {
+        return null;
+      }
+      token = 'Bearer $token';
+      var response = await http.get(
+          Uri(
+            host: '10.0.2.2',
+            port: 5011,
+            scheme: 'https',
+            path: "/api/BasisAid",
+          ),
+          headers: {
+            'Authorization': token,
+          });
       if (response.statusCode == HttpStatus.ok) {
         var responseBody = jsonDecode(response.body);
         BasisAidModel basisAidModel = BasisAidModel.fromJson(responseBody);

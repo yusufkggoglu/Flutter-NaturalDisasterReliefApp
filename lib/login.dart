@@ -121,7 +121,7 @@ class _LoginState extends State<Login> {
                                 },
                                 decoration: const InputDecoration(
                                   border: OutlineInputBorder(),
-                                  labelText: 'Kullanıcı Adı',
+                                  labelText: 'Email',
                                 ),
                               ),
                             ),
