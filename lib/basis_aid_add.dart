@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_1/constants/color.dart';
 import 'package:flutter_application_1/home.dart';
 import 'package:flutter_application_1/services/basis_aid_service.dart';
+import 'package:flutter_application_1/services/identity_server_service.dart';
 import 'package:flutter_application_1/user_interface.dart';
 import 'package:hexcolor/hexcolor.dart';
 
@@ -314,7 +315,14 @@ class _BasisAidAddState extends State<BasisAidAdd> {
                                     var description =
                                         _descriptionController.text;
                                     var amount = _amountController.text;
-
+                                    var identity = await IdentityServerService
+                                        .getAuthUser();
+                                    var name = identity!.name.toString() +
+                                        " " +
+                                        identity!.surname.toString();
+                                    var phone =
+                                        identity!.phoneNumber.toString();
+                                    var userId = identity!.id.toString();
                                     var body = {
                                       'province': province,
                                       'district': district,
@@ -324,11 +332,10 @@ class _BasisAidAddState extends State<BasisAidAdd> {
                                       'subTitle': subTitle,
                                       'description': description,
                                       "status": true,
-                                      "userId":
-                                          "ab4d48a1-caec-4001-af23-208e279f472b",
-                                      "name": "string",
+                                      "userId": userId,
+                                      "name": name,
                                       "amount": amount,
-                                      "phone": "string",
+                                      "phone": phone,
                                     };
 
                                     var data =

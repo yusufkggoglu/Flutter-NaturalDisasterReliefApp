@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_1/constants/color.dart';
 import 'package:flutter_application_1/home.dart';
 import 'package:flutter_application_1/services/basis_aid_service.dart';
+import 'package:flutter_application_1/services/identity_server_service.dart';
 import 'package:flutter_application_1/user_interface.dart';
 import 'package:hexcolor/hexcolor.dart';
 
@@ -329,6 +330,14 @@ class _BasisAidUpdateState extends State<BasisAidUpdate> {
                                       var description =
                                           _descriptionController.text;
                                       var amount = _amountController.text;
+                                      var identity = await IdentityServerService
+                                          .getAuthUser();
+                                      var name = identity!.name.toString() +
+                                          " " +
+                                          identity!.surname.toString();
+                                      var phone =
+                                          identity!.phoneNumber.toString();
+                                      var userId = identity!.id.toString();
                                       var body = {
                                         'id': widget.id,
                                         'province': province,
@@ -340,10 +349,9 @@ class _BasisAidUpdateState extends State<BasisAidUpdate> {
                                         'description': description,
                                         'amount': amount,
                                         "status": true,
-                                        "userId":
-                                            "ab4d48a1-caec-4001-af23-208e279f472b",
-                                        "name": "string",
-                                        "phone": "string",
+                                        "userId": userId,
+                                        "name": name,
+                                        "phone": phone,
                                       };
 
                                       var data = await BasisAidService
