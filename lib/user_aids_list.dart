@@ -122,7 +122,7 @@ class _HumaneAidListByUser extends State<HumaneAidListByUser> {
                     humaneAidData != null
                         ? ListView.builder(
                             shrinkWrap: true,
-                            physics: NeverScrollableScrollPhysics(),
+                            physics: const NeverScrollableScrollPhysics(),
                             itemCount: humaneAidData?.length,
                             itemBuilder: (context, index) {
                               var human = humaneAidData?[index];
@@ -177,7 +177,7 @@ class _HumaneAidListByUser extends State<HumaneAidListByUser> {
                     basisAidData != null
                         ? ListView.builder(
                             shrinkWrap: true,
-                            physics: NeverScrollableScrollPhysics(),
+                            physics: const NeverScrollableScrollPhysics(),
                             itemCount: basisAidData?.length,
                             itemBuilder: (context, index) {
                               var basisAid = basisAidData?[index];
@@ -186,7 +186,7 @@ class _HumaneAidListByUser extends State<HumaneAidListByUser> {
                                   Navigator.of(context).push(MaterialPageRoute(
                                       builder: (context) =>
                                           BasisAidDetailByUser(
-                                            id: basisAid!.id.toString(),
+                                            id: basisAid.id.toString(),
                                           )))
                                 },
                                 child: Card(

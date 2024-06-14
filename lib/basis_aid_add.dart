@@ -317,12 +317,10 @@ class _BasisAidAddState extends State<BasisAidAdd> {
                                     var amount = _amountController.text;
                                     var identity = await IdentityServerService
                                         .getAuthUser();
-                                    var name = identity!.name.toString() +
-                                        " " +
-                                        identity!.surname.toString();
-                                    var phone =
-                                        identity!.phoneNumber.toString();
-                                    var userId = identity!.id.toString();
+                                    var name =
+                                        "${identity!.name} ${identity.surname}";
+                                    var phone = identity.phoneNumber.toString();
+                                    var userId = identity.id.toString();
                                     var body = {
                                       'province': province,
                                       'district': district,

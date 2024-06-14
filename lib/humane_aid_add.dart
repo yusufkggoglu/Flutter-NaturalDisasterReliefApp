@@ -8,6 +8,7 @@ import 'package:flutter_application_1/constants/color.dart';
 import 'package:flutter_application_1/home.dart';
 import 'package:flutter_application_1/services/humane_aid_service.dart';
 import 'package:flutter_application_1/services/identity_server_service.dart';
+import 'package:flutter_application_1/services/location_service.dart';
 import 'package:flutter_application_1/user_interface.dart';
 import 'package:hexcolor/hexcolor.dart';
 
@@ -20,6 +21,8 @@ class HumaneAidAdd extends StatefulWidget {
 
 class _HumaneAidAddState extends State<HumaneAidAdd> {
   final _key = GlobalKey<FormState>();
+  String currentLink = '';
+  bool _isLoading = false;
 
   late final TextEditingController _provinceController;
   late final TextEditingController _districtController;
@@ -40,6 +43,63 @@ class _HumaneAidAddState extends State<HumaneAidAdd> {
     _subTitleController = TextEditingController();
     _descriptionController = TextEditingController();
   }
+
+  Future<void> getCurrentLocation() async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      currentLink = await LocationService.getLocationLink();
+      var addressInfo =
+          await LocationService.getLocationInfoFromLink(currentLink);
+      _locationUrlController.text = currentLink.toString();
+      _districtController.text = addressInfo!.subAdministrativeArea.toString();
+      _provinceController.text = addressInfo.administrativeArea.toString();
+      _neighborhoodController.text = "${addressInfo.sublocality} mahallesi";
+
+      if (!addressInfo.subthrougthfare!.toLowerCase().contains("no")) {
+        _addressController.text = "No ${addressInfo.subthrougthfare}";
+      } else {
+        _addressController.text = addressInfo.subthrougthfare.toString();
+      }
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
+
+  // Future<void> fillInfoByUrl() async {
+  //   setState(() {
+  //     _isLoading = true;
+  //   });
+
+  //   try {
+  //     var url = _locationUrlController.text;
+  //     if (url.contains("maps.app.goo.gl")) {
+  //       url = await LocationService.getLongUrl(url);
+  //     }
+
+  //     var latitude = LocationService.extractLatitude(url);
+  //     var longitude = LocationService.extractLongitude(url);
+  //     var addressInfo =
+  //         await LocationService.getLocationInfoCoordinate(latitude, longitude);
+  //     _locationUrlController.text = currentLink.toString();
+  //     _districtController.text = addressInfo!.subAdministrativeArea.toString();
+  //     _provinceController.text = addressInfo.administrativeArea.toString();
+  //     _neighborhoodController.text = "${addressInfo.sublocality} mahallesi";
+  //     if (!addressInfo.subthrougthfare!.toLowerCase().contains("no")) {
+  //       _addressController.text = "No ${addressInfo.subthrougthfare}";
+  //     } else {
+  //       _addressController.text = addressInfo.subthrougthfare.toString();
+  //     }
+  //   } finally {
+  //     setState(() {
+  //       _isLoading = false;
+  //     });
+  //   }
+  // }
 
   @override
   void dispose() {
@@ -273,6 +333,40 @@ class _HumaneAidAddState extends State<HumaneAidAdd> {
                               ),
                             ),
                           ),
+                          // Padding(
+                          //     padding: const EdgeInsets.all(20),
+                          //     child: SizedBox(
+                          //       width: deviceWidth,
+                          //       height: 50.0,
+                          //       child: ElevatedButton(
+                          //         onPressed: () async {
+                          //           await fillInfoByUrl();
+                          //         },
+                          //         child: _isLoading
+                          //             ? const CircularProgressIndicator(
+                          //                 color: Colors.white,
+                          //               )
+                          //             : const Text('Girilen Konum URL'
+                          //                 'ine göre bilgileri getir'),
+                          //       ),
+                          //     )),
+                          Padding(
+                              padding: const EdgeInsets.all(20),
+                              child: SizedBox(
+                                width: deviceWidth,
+                                height: 50.0,
+                                child: ElevatedButton(
+                                  onPressed: () async {
+                                    await getCurrentLocation();
+                                  },
+                                  child: _isLoading
+                                      ? const CircularProgressIndicator(
+                                          color: Colors.white,
+                                        )
+                                      : const Text(
+                                          'Anlık Konum Bilgilerimi Getir'),
+                                ),
+                              )),
                           Padding(
                             padding: const EdgeInsets.all(20),
                             child: SizedBox(
@@ -293,12 +387,10 @@ class _HumaneAidAddState extends State<HumaneAidAdd> {
                                         _descriptionController.text;
                                     var identity = await IdentityServerService
                                         .getAuthUser();
-                                    var name = identity!.name.toString() +
-                                        " " +
-                                        identity!.surname.toString();
-                                    var phone =
-                                        identity!.phoneNumber.toString();
-                                    var userId = identity!.id.toString();
+                                    var name =
+                                        "${identity!.name} ${identity.surname}";
+                                    var phone = identity.phoneNumber.toString();
+                                    var userId = identity.id.toString();
                                     var body = {
                                       'province': province,
                                       'district': district,

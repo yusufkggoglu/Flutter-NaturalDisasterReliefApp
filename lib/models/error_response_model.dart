@@ -1,5 +1,5 @@
 class ErrorResponse {
-  Null? data;
+  Null data;
   List<String>? errors;
 
   ErrorResponse({this.data, this.errors});
@@ -10,9 +10,9 @@ class ErrorResponse {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['data'] = this.data;
-    data['errors'] = this.errors;
+    data['errors'] = errors;
     return data;
   }
 }

@@ -306,12 +306,11 @@ class _HumaneAidUpdateState extends State<HumaneAidUpdate> {
                                           _descriptionController.text;
                                       var identity = await IdentityServerService
                                           .getAuthUser();
-                                      var name = identity!.name.toString() +
-                                          " " +
-                                          identity!.surname.toString();
+                                      var name =
+                                          "${identity!.name} ${identity.surname}";
                                       var phone =
-                                          identity!.phoneNumber.toString();
-                                      var userId = identity!.id.toString();
+                                          identity.phoneNumber.toString();
+                                      var userId = identity.id.toString();
                                       var body = {
                                         'id': widget.id,
                                         'province': province,
