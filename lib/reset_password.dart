@@ -1,36 +1,40 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/constants/color.dart';
-import 'package:flutter_application_1/constants/identity.dart';
 import 'package:flutter_application_1/home.dart';
-import 'package:flutter_application_1/reset_verify_email.dart';
-import 'package:flutter_application_1/services/identity_server_service.dart';
+import 'package:flutter_application_1/services/reset_password_service.dart';
 import 'package:flutter_application_1/user_interface.dart';
 import 'package:hexcolor/hexcolor.dart';
 
-class Login extends StatefulWidget {
-  const Login({super.key});
+class ResetPassword extends StatefulWidget {
+  final String email;
+  final String code;
+
+  const ResetPassword({super.key, required this.email, required this.code});
 
   @override
-  State<Login> createState() => _LoginState();
+  State<ResetPassword> createState() => _ResetPassword();
 }
 
-class _LoginState extends State<Login> {
+class _ResetPassword extends State<ResetPassword> {
   final _key = GlobalKey<FormState>();
-  late final TextEditingController _usernameController;
-  late final TextEditingController _passwordController;
+  late final TextEditingController _newPasswordController;
+  late final TextEditingController _newPassword2Controller;
+  late final counter = 0;
   @override
   void initState() {
     super.initState();
-    _usernameController = TextEditingController();
-    _passwordController = TextEditingController();
+    _newPasswordController = TextEditingController();
+    _newPassword2Controller = TextEditingController();
   }
 
   @override
   void dispose() {
-    _usernameController.dispose();
-    _passwordController.dispose();
+    _newPasswordController.dispose();
+    _newPassword2Controller.dispose();
     super.dispose();
   }
 
@@ -66,7 +70,7 @@ class _LoginState extends State<Login> {
                                 fontWeight: FontWeight.w100, fontSize: 14),
                           ),
                           Text(
-                            "Giriş",
+                            "Şifremi Unuttum",
                             style: TextStyle(
                                 fontSize: 24,
                                 fontWeight: FontWeight.bold,
@@ -107,44 +111,42 @@ class _LoginState extends State<Login> {
                             Padding(
                               padding: const EdgeInsets.all(14),
                               child: TextFormField(
-                                controller: _usernameController,
+                                controller: _newPasswordController,
                                 obscureText: false,
                                 validator: (value) {
                                   if (value == null || value.isEmpty) {
                                     return 'Bu alan boş bırakılamaz!';
                                   } else {
-                                    if (value.length >= 5) {
-                                      return null;
-                                    } else {
-                                      return 'Alan en az 5 harften oluşmalıdır !';
+                                    if (_newPassword2Controller.text != value) {
+                                      return 'Şifreler uyuşmuyor !';
                                     }
+                                    return null;
                                   }
                                 },
                                 decoration: const InputDecoration(
                                   border: OutlineInputBorder(),
-                                  labelText: 'Email',
+                                  labelText: 'Yeni Şifre',
                                 ),
                               ),
                             ),
                             Padding(
                               padding: const EdgeInsets.all(14),
                               child: TextFormField(
-                                controller: _passwordController,
-                                obscureText: true,
+                                controller: _newPassword2Controller,
+                                obscureText: false,
                                 validator: (value) {
                                   if (value == null || value.isEmpty) {
                                     return 'Bu alan boş bırakılamaz!';
                                   } else {
-                                    if (value.length >= 5) {
-                                      return null;
-                                    } else {
-                                      return 'Alan en az 5 harften oluşmalıdır !';
+                                    if (_newPasswordController.text != value) {
+                                      return 'Şifreler uyuşmuyor !';
                                     }
+                                    return null;
                                   }
                                 },
                                 decoration: const InputDecoration(
                                   border: OutlineInputBorder(),
-                                  labelText: 'Şifre',
+                                  labelText: 'Yeni Şifre Tekrar',
                                 ),
                               ),
                             ),
@@ -156,26 +158,24 @@ class _LoginState extends State<Login> {
                                 child: ElevatedButton(
                                   onPressed: () async {
                                     if (_key.currentState!.validate()) {
-                                      var username = _usernameController.text;
-                                      var passwd = _passwordController.text;
-
+                                      var newPassword =
+                                          _newPasswordController.text;
                                       var body = {
-                                        'client_id': client_id,
-                                        'client_secret': client_secret,
-                                        'grant_type': grant_type,
-                                        'username': username,
-                                        'password': passwd,
+                                        'Email': widget.email,
+                                        'Password': newPassword,
+                                        'Code': widget.code,
                                       };
 
-                                      var data = await IdentityServerService
-                                          .authenticate(body);
-                                      if (data != null) {
+                                      var data = await ResetPasswordService
+                                          .resetPassword(jsonEncode(body));
+                                      if (data == "OK") {
                                         ScaffoldMessenger.of(context)
                                             .showSnackBar(
                                           const SnackBar(
                                               duration: Duration(seconds: 3),
                                               backgroundColor: Colors.green,
-                                              content: Text('Giriş Yapıldı')),
+                                              content: Text(
+                                                  'Şifre başarıyla değiştirildi, Giriş yapabilirsiniz.')),
                                         );
                                         Navigator.pushAndRemoveUntil(
                                             context,
@@ -191,34 +191,13 @@ class _LoginState extends State<Login> {
                                               duration: Duration(seconds: 3),
                                               backgroundColor: Colors.red,
                                               content: Text(
-                                                  'Bilgiler hatalı , Tekrar deneyiniz.')),
+                                                  'Bir hata oluştu, Tekrar deneyiniz.')),
                                         );
                                       }
                                     }
                                   },
                                   child: const Text(
-                                    'Giriş Yap',
-                                    style: TextStyle(fontSize: 20),
-                                  ),
-                                ),
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.all(20),
-                              child: SizedBox(
-                                width: deviceWidth,
-                                height: 50.0,
-                                child: ElevatedButton(
-                                  onPressed: () async {
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) =>
-                                              const ResetVerifyEmail(),
-                                        ));
-                                  },
-                                  child: const Text(
-                                    'Şifremi Unuttum',
+                                    'Şifremi Değiştir',
                                     style: TextStyle(fontSize: 20),
                                   ),
                                 ),

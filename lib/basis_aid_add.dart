@@ -5,9 +5,11 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/constants/color.dart';
+import 'package:flutter_application_1/constants/province.dart';
 import 'package:flutter_application_1/home.dart';
 import 'package:flutter_application_1/services/basis_aid_service.dart';
 import 'package:flutter_application_1/services/identity_server_service.dart';
+import 'package:flutter_application_1/services/location_service.dart';
 import 'package:flutter_application_1/user_interface.dart';
 import 'package:hexcolor/hexcolor.dart';
 
@@ -20,6 +22,9 @@ class BasisAidAdd extends StatefulWidget {
 
 class _BasisAidAddState extends State<BasisAidAdd> {
   final _key = GlobalKey<FormState>();
+  String currentLink = '';
+  bool _isLoading = false;
+  String? _selectedProvince;
 
   late final TextEditingController _provinceController;
   late final TextEditingController _districtController;
@@ -41,6 +46,32 @@ class _BasisAidAddState extends State<BasisAidAdd> {
     _subTitleController = TextEditingController();
     _descriptionController = TextEditingController();
     _amountController = TextEditingController();
+  }
+
+  Future<void> getCurrentLocation() async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      currentLink = await LocationService.getLocationLink();
+      var addressInfo =
+          await LocationService.getLocationInfoFromLink(currentLink);
+      _locationUrlController.text = currentLink.toString();
+      _districtController.text = addressInfo!.subAdministrativeArea.toString();
+      _provinceController.text = addressInfo.administrativeArea.toString();
+      _neighborhoodController.text = "${addressInfo.sublocality} mahallesi";
+
+      if (!addressInfo.subthrougthfare!.toLowerCase().contains("no")) {
+        _addressController.text = "No ${addressInfo.subthrougthfare}";
+      } else {
+        _addressController.text = addressInfo.subthrougthfare.toString();
+      }
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
   }
 
   @override
@@ -196,24 +227,29 @@ class _BasisAidAddState extends State<BasisAidAdd> {
                           ),
                           Padding(
                             padding: const EdgeInsets.all(14),
-                            child: TextFormField(
-                              controller: _provinceController,
-                              obscureText: false,
-                              validator: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return 'Bu alan boş bırakılamaz!';
-                                } else {
-                                  if (value.length >= 3) {
-                                    return null;
-                                  } else {
-                                    return 'Alan en az 3 harften oluşmalıdır !';
-                                  }
-                                }
-                              },
+                            child: DropdownButtonFormField<String>(
+                              value: _selectedProvince,
                               decoration: const InputDecoration(
                                 border: OutlineInputBorder(),
                                 labelText: 'İl',
                               ),
+                              items: provinces.map((String value) {
+                                return DropdownMenuItem<String>(
+                                  value: value,
+                                  child: Text(value),
+                                );
+                              }).toList(),
+                              onChanged: (newValue) {
+                                setState(() {
+                                  _selectedProvince = newValue;
+                                });
+                              },
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'Bu alan boş bırakılamaz!';
+                                }
+                                return null;
+                              },
                             ),
                           ),
                           Padding(
@@ -297,6 +333,23 @@ class _BasisAidAddState extends State<BasisAidAdd> {
                             ),
                           ),
                           Padding(
+                              padding: const EdgeInsets.all(20),
+                              child: SizedBox(
+                                width: deviceWidth,
+                                height: 50.0,
+                                child: ElevatedButton(
+                                  onPressed: () async {
+                                    await getCurrentLocation();
+                                  },
+                                  child: _isLoading
+                                      ? const CircularProgressIndicator(
+                                          color: Colors.white,
+                                        )
+                                      : const Text(
+                                          'Anlık Konum Bilgilerimi Getir'),
+                                ),
+                              )),
+                          Padding(
                             padding: const EdgeInsets.all(20),
                             child: SizedBox(
                               width: deviceWidth,
@@ -304,7 +357,7 @@ class _BasisAidAddState extends State<BasisAidAdd> {
                               child: ElevatedButton(
                                 onPressed: () async {
                                   if (_key.currentState!.validate()) {
-                                    var province = _provinceController.text;
+                                    var province = _selectedProvince;
                                     var district = _districtController.text;
                                     var neighborhood =
                                         _neighborhoodController.text;

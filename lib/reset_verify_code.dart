@@ -1,36 +1,36 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/constants/color.dart';
-import 'package:flutter_application_1/constants/identity.dart';
 import 'package:flutter_application_1/home.dart';
-import 'package:flutter_application_1/reset_verify_email.dart';
-import 'package:flutter_application_1/services/identity_server_service.dart';
+import 'package:flutter_application_1/reset_password.dart';
+import 'package:flutter_application_1/services/reset_password_service.dart';
 import 'package:flutter_application_1/user_interface.dart';
 import 'package:hexcolor/hexcolor.dart';
 
-class Login extends StatefulWidget {
-  const Login({super.key});
+class ResetVerifyCode extends StatefulWidget {
+  final String email;
+  const ResetVerifyCode({super.key, required this.email});
 
   @override
-  State<Login> createState() => _LoginState();
+  State<ResetVerifyCode> createState() => _ResetVerifyCode();
 }
 
-class _LoginState extends State<Login> {
+class _ResetVerifyCode extends State<ResetVerifyCode> {
   final _key = GlobalKey<FormState>();
-  late final TextEditingController _usernameController;
-  late final TextEditingController _passwordController;
+  late final TextEditingController _codeController;
+  late var counter = 0;
   @override
   void initState() {
     super.initState();
-    _usernameController = TextEditingController();
-    _passwordController = TextEditingController();
+    _codeController = TextEditingController();
   }
 
   @override
   void dispose() {
-    _usernameController.dispose();
-    _passwordController.dispose();
+    _codeController.dispose();
     super.dispose();
   }
 
@@ -66,7 +66,7 @@ class _LoginState extends State<Login> {
                                 fontWeight: FontWeight.w100, fontSize: 14),
                           ),
                           Text(
-                            "Giriş",
+                            "Şifremi Unuttum",
                             style: TextStyle(
                                 fontSize: 24,
                                 fontWeight: FontWeight.bold,
@@ -107,7 +107,7 @@ class _LoginState extends State<Login> {
                             Padding(
                               padding: const EdgeInsets.all(14),
                               child: TextFormField(
-                                controller: _usernameController,
+                                controller: _codeController,
                                 obscureText: false,
                                 validator: (value) {
                                   if (value == null || value.isEmpty) {
@@ -122,29 +122,7 @@ class _LoginState extends State<Login> {
                                 },
                                 decoration: const InputDecoration(
                                   border: OutlineInputBorder(),
-                                  labelText: 'Email',
-                                ),
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.all(14),
-                              child: TextFormField(
-                                controller: _passwordController,
-                                obscureText: true,
-                                validator: (value) {
-                                  if (value == null || value.isEmpty) {
-                                    return 'Bu alan boş bırakılamaz!';
-                                  } else {
-                                    if (value.length >= 5) {
-                                      return null;
-                                    } else {
-                                      return 'Alan en az 5 harften oluşmalıdır !';
-                                    }
-                                  }
-                                },
-                                decoration: const InputDecoration(
-                                  border: OutlineInputBorder(),
-                                  labelText: 'Şifre',
+                                  labelText: 'KOD',
                                 ),
                               ),
                             ),
@@ -156,69 +134,57 @@ class _LoginState extends State<Login> {
                                 child: ElevatedButton(
                                   onPressed: () async {
                                     if (_key.currentState!.validate()) {
-                                      var username = _usernameController.text;
-                                      var passwd = _passwordController.text;
-
+                                      var code = _codeController.text;
                                       var body = {
-                                        'client_id': client_id,
-                                        'client_secret': client_secret,
-                                        'grant_type': grant_type,
-                                        'username': username,
-                                        'password': passwd,
+                                        'Email': widget.email,
+                                        'Code': code,
                                       };
 
-                                      var data = await IdentityServerService
-                                          .authenticate(body);
-                                      if (data != null) {
-                                        ScaffoldMessenger.of(context)
-                                            .showSnackBar(
-                                          const SnackBar(
-                                              duration: Duration(seconds: 3),
-                                              backgroundColor: Colors.green,
-                                              content: Text('Giriş Yapıldı')),
-                                        );
-                                        Navigator.pushAndRemoveUntil(
+                                      var data =
+                                          await ResetPasswordService.verifyCode(
+                                              jsonEncode(body));
+                                      if (data == "OK") {
+                                        Navigator.push(
                                             context,
                                             MaterialPageRoute(
                                               builder: (context) =>
-                                                  const HomeScreen(),
-                                            ),
-                                            (route) => false);
+                                                  ResetPassword(
+                                                code: code,
+                                                email: widget.email,
+                                              ),
+                                            ));
                                       } else {
-                                        ScaffoldMessenger.of(context)
-                                            .showSnackBar(
-                                          const SnackBar(
-                                              duration: Duration(seconds: 3),
-                                              backgroundColor: Colors.red,
-                                              content: Text(
-                                                  'Bilgiler hatalı , Tekrar deneyiniz.')),
-                                        );
+                                        if (counter == 3) {
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(
+                                            const SnackBar(
+                                                duration: Duration(seconds: 3),
+                                                backgroundColor: Colors.red,
+                                                content: Text(
+                                                    'KOD kullanım süresi doldu,Tekrar deneyiniz')),
+                                          );
+                                          Navigator.pushAndRemoveUntil(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) =>
+                                                    const HomeScreen(),
+                                              ),
+                                              (route) => false);
+                                        } else {
+                                          counter = counter + 1;
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(
+                                            const SnackBar(
+                                                duration: Duration(seconds: 3),
+                                                backgroundColor: Colors.red,
+                                                content: Text('KOD yanlış')),
+                                          );
+                                        }
                                       }
                                     }
                                   },
                                   child: const Text(
                                     'Giriş Yap',
-                                    style: TextStyle(fontSize: 20),
-                                  ),
-                                ),
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.all(20),
-                              child: SizedBox(
-                                width: deviceWidth,
-                                height: 50.0,
-                                child: ElevatedButton(
-                                  onPressed: () async {
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) =>
-                                              const ResetVerifyEmail(),
-                                        ));
-                                  },
-                                  child: const Text(
-                                    'Şifremi Unuttum',
                                     style: TextStyle(fontSize: 20),
                                   ),
                                 ),

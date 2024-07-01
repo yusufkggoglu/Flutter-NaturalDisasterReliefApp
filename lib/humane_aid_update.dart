@@ -5,6 +5,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/constants/color.dart';
+import 'package:flutter_application_1/constants/province.dart';
 import 'package:flutter_application_1/home.dart';
 import 'package:flutter_application_1/services/humane_aid_service.dart';
 import 'package:flutter_application_1/services/identity_server_service.dart';
@@ -21,6 +22,7 @@ class HumaneAidUpdate extends StatefulWidget {
 
 class _HumaneAidUpdateState extends State<HumaneAidUpdate> {
   final _key = GlobalKey<FormState>();
+  String? _selectedProvince;
 
   late final TextEditingController _provinceController;
   late final TextEditingController _districtController;
@@ -64,6 +66,8 @@ class _HumaneAidUpdateState extends State<HumaneAidUpdate> {
     _neighborhoodController.text = data.neighborhood.toString();
     _addressController.text = data.address.toString();
     _locationUrlController.text = data.locationUrl.toString();
+    _selectedProvince = data.province.toString();
+
     setState(() {});
   }
 
@@ -186,24 +190,29 @@ class _HumaneAidUpdateState extends State<HumaneAidUpdate> {
                             ),
                             Padding(
                               padding: const EdgeInsets.all(14),
-                              child: TextFormField(
-                                controller: _provinceController,
-                                obscureText: false,
-                                validator: (value) {
-                                  if (value == null || value.isEmpty) {
-                                    return 'Bu alan boş bırakılamaz!';
-                                  } else {
-                                    if (value.length >= 3) {
-                                      return null;
-                                    } else {
-                                      return 'Alan en az 3 harften oluşmalıdır !';
-                                    }
-                                  }
-                                },
+                              child: DropdownButtonFormField<String>(
+                                value: _selectedProvince,
                                 decoration: const InputDecoration(
                                   border: OutlineInputBorder(),
                                   labelText: 'İl',
                                 ),
+                                items: provinces.map((String value) {
+                                  return DropdownMenuItem<String>(
+                                    value: value,
+                                    child: Text(value),
+                                  );
+                                }).toList(),
+                                onChanged: (newValue) {
+                                  setState(() {
+                                    _selectedProvince = newValue;
+                                  });
+                                },
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'Bu alan boş bırakılamaz!';
+                                  }
+                                  return null;
+                                },
                               ),
                             ),
                             Padding(
@@ -294,7 +303,7 @@ class _HumaneAidUpdateState extends State<HumaneAidUpdate> {
                                 child: ElevatedButton(
                                   onPressed: () async {
                                     if (_key.currentState!.validate()) {
-                                      var province = _provinceController.text;
+                                      var province = _selectedProvince;
                                       var district = _districtController.text;
                                       var neighborhood =
                                           _neighborhoodController.text;
